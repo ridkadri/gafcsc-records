@@ -40,3 +40,18 @@ A comprehensive Laravel-based staff management system designed specifically for 
    ```bash
    git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git
    cd military-university-staff-management
+   
+2. Install dependencies
+    composer install
+    npm install && npm run build
+
+3. Environment setup
+    cp .env.example .env
+    php artisan key:generate
+
+4. Database setup
+    php artisan migrate
+    php artisan db:seed
+
+5. Start the application
+    php artisan serve
