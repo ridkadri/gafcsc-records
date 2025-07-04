@@ -214,15 +214,26 @@
                             <datalist id="department-suggestions">
                                 <option value="Command">
                                 <option value="Military Studies">
-                                <option value="Graduate School">
-                                <option value="Audio/Visual">
+                                <option value="Teaching Class">
+                                <option value="Registry">
+                                <option value="Graphic & Map">
+                                <option value="Stores">
+                                <option value="Audio Visual">
+                                <option value="Tradesmen">
+                                <option value="Catering/Mess/Bar/Kitchen">
+                                <option value="Labourers">
+                                <option value="Technical (Printing)">
+                                <option value="Gardener">
+                                <option value="Sanitation">
+                                <option value="Messenger">
+                                <option value="Wardens">
                                 <option value="Finance">
                                 <option value="Corporate Affairs">
                                 <option value="Information Technology">
                                 <option value="Library">
                                 <option value="Research">
-                                <option value="Maintenance">
-                                <option value="Other Ranks">
+                                <option value="Administration">
+                                <option value="Secretarial">
                                 @if(isset($existingDepartments))
                                     @foreach($existingDepartments as $existingDepartment)
                                         <option value="{{ $existingDepartment }}">

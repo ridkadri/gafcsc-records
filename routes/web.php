@@ -6,6 +6,15 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
+// Add this at the top of routes/web.php
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'ok',
+        'timestamp' => now(),
+        'app' => config('app.name')
+    ]);
+});
+
 // Default welcome page
 Route::get('/', function () {
     return view('welcome');
