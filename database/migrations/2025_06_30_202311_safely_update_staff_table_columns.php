@@ -34,10 +34,10 @@ return new class extends Migration
             DB::statement('UPDATE staff SET department = office WHERE department IS NULL');
         }
 
-        // Handle missing service_numbers with SQLite compatible syntax
+        // Handle missing service_numbers with cross-database compatible syntax
         if (Schema::hasColumn('staff', 'service_number')) {
-            // SQLite uses || for concatenation
-            DB::statement('UPDATE staff SET service_number = "TEMP" || id WHERE service_number IS NULL OR service_number = ""');
+            // Use CONCAT for better cross-database compatibility
+            DB::statement("UPDATE staff SET service_number = CONCAT('TEMP', id) WHERE service_number IS NULL OR service_number = ''");
             
             Schema::table('staff', function (Blueprint $table) {
                 $table->string('service_number')->nullable(false)->unique()->change();
@@ -46,7 +46,7 @@ return new class extends Migration
 
         // Handle missing departments
         if (Schema::hasColumn('staff', 'department')) {
-            DB::statement('UPDATE staff SET department = "General" WHERE department IS NULL OR department = ""');
+            DB::statement("UPDATE staff SET department = 'General' WHERE department IS NULL OR department = ''");
             
             Schema::table('staff', function (Blueprint $table) {
                 $table->string('department')->nullable(false)->change();
