@@ -6,10 +6,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
-// Add this at the very top of routes/web.php
-Route::get('/test', function () {
-    return 'Laravel is working!';
-});
 
 // Default welcome page
 Route::get('/', function () {
