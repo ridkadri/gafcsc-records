@@ -7,237 +7,191 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Welcome Section -->
+            
+            {{-- Welcome Message --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                
                 <div class="p-6 text-gray-900">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h3 class="text-2xl font-bold text-gray-800 mb-2">Welcome back, {{ Auth::user()->name }}!</h3>
-                            <p class="text-gray-600">GAFCSC Staff Management System Overview</p>
+                            <h3 class="text-2xl font-bold">{{ __("Welcome back, :name!", ['name' => Auth::user()->name]) }}</h3>
+                            <p class="text-gray-600 mt-1">{{ Auth::user()->getRoleDisplayName() }}</p>
                         </div>
-                        <div class="hidden sm:block">
-                            <svg class="w-16 h-16 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Main Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <!-- Total Staff Card -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt class="text-sm font-medium text-gray-500 truncate">Total Staff</dt>
-                                    <dd class="text-3xl font-semibold text-gray-900">{{ $staff->count() }}</dd>
-                                </dl>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Military Staff Card -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt class="text-sm font-medium text-gray-500 truncate">Military Personnel</dt>
-                                    <dd class="text-3xl font-semibold text-green-700">{{ $staff->where('staff_type', 'military')->count() }}</dd>
-                                </dl>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Civilian Staff Card -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.75 2.524z"/>
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt class="text-sm font-medium text-gray-500 truncate">Civilian Personnel</dt>
-                                    <dd class="text-3xl font-semibold text-purple-700">{{ $staff->where('staff_type', 'civilian')->count() }}</dd>
-                                </dl>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Departments Card -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt class="text-sm font-medium text-gray-500 truncate">Departments</dt>
-                                    <dd class="text-3xl font-semibold text-orange-700">{{ $staff->pluck('department')->unique()->count() }}</dd>
-                                </dl>
-                            </div>
+                        <div class="text-right">
+                            <p class="text-sm text-gray-500">{{ now()->format('l, F j, Y') }}</p>
+                            <p class="text-sm text-gray-500">{{ now()->format('g:i A') }}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Quick Actions Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <!-- Quick Actions -->
+            {{-- Statistics Grid --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                
+                {{-- Total Staff --}}
+                @if(Auth::user()->canViewStaff())
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div class="p-6">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-blue-100 rounded-lg p-3">
+                                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm text-gray-600">Total Staff</p>
+                                    <p class="text-2xl font-bold text-gray-900">{{ \App\Models\Staff::count() }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Military Staff --}}
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div class="p-6">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-green-100 rounded-lg p-3">
+                                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm text-gray-600">Military</p>
+                                    <p class="text-2xl font-bold text-gray-900">{{ \App\Models\Staff::where('type', 'military')->count() }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Civilian Staff --}}
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div class="p-6">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-purple-100 rounded-lg p-3">
+                                    <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm text-gray-600">Civilian</p>
+                                    <p class="text-2xl font-bold text-gray-900">{{ \App\Models\Staff::where('type', 'civilian')->count() }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Total Users --}}
+                @if(Auth::user()->canManageUsers())
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div class="p-6">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-orange-100 rounded-lg p-3">
+                                    <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm text-gray-600">System Users</p>
+                                    <p class="text-2xl font-bold text-gray-900">{{ \App\Models\User::count() }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            {{-- Quick Actions --}}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                {{-- Quick Links --}}
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
-                        <div class="space-y-3">
-                            <a href="{{ route('staff.index') }}" 
-                               class="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                        <div class="space-y-2">
+                            
+                            @if(Auth::user()->staff_id && Auth::user()->staff)
+                                <a href="{{ route('staff.profile.show') }}" class="flex items-center p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                                    <svg class="w-5 h-5 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                    </svg>
+                                    <span class="text-gray-700 font-medium">View My Profile</span>
+                                </a>
+                            @endif
+
+                            @if(Auth::user()->canViewStaff())
+                                <a href="{{ route('staff.index') }}" class="flex items-center p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                                    <svg class="w-5 h-5 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                    </svg>
+                                    <span class="text-gray-700 font-medium">Manage Staff</span>
+                                </a>
+
+                                <a href="{{ route('staff.create') }}" class="flex items-center p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                                    <svg class="w-5 h-5 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                                    </svg>
+                                    <span class="text-gray-700 font-medium">Add New Staff</span>
+                                </a>
+                            @endif
+
+                            @if(Auth::user()->canManageUsers())
+                                <a href="{{ route('users.index') }}" class="flex items-center p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                                    <svg class="w-5 h-5 text-orange-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                    </svg>
+                                    <span class="text-gray-700 font-medium">Manage Users</span>
+                                </a>
+                            @endif
+
+                            <a href="{{ route('profile.edit') }}" class="flex items-center p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                                <svg class="w-5 h-5 text-gray-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 </svg>
-                                View All Staff
+                                <span class="text-gray-700 font-medium">Account Settings</span>
                             </a>
-                            @if(Auth::user()->canManageStaff())
-                                <a href="{{ route('staff.create') }}" 
-                                   class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
-                                    </svg>
-                                    Add New Staff
-                                </a>
-                                <a href="{{ route('users.index') }}" 
-                                   class="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 8a2 2 0 110-4 2 2 0 010 4zM10 18a8 8 0 100-16 8 8 0 000 16z"/>
-                                    </svg>
-                                    Manage Users
-                                </a>
-                            @endif
                         </div>
                     </div>
                 </div>
 
-                <!-- Department Breakdown -->
+                {{-- System Information --}}
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Top Departments</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">System Information</h3>
                         <div class="space-y-3">
-                            @foreach($staff->groupBy('department')->sortByDesc->count()->take(5) as $department => $departmentStaff)
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <div class="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
-                                        <span class="text-sm text-gray-700">{{ $department }}</span>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-gray-600">Your Role</span>
+                                <span class="font-semibold text-gray-900">{{ Auth::user()->getRoleDisplayName() }}</span>
+                            </div>
+                            
+                            @if(Auth::user()->staff_id && Auth::user()->staff)
+                                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                    <span class="text-gray-600">Staff Type</span>
+                                    <span class="font-semibold text-gray-900">{{ ucfirst(Auth::user()->staff->type) }}</span>
+                                </div>
+                                
+                                @if(Auth::user()->staff->department)
+                                    <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                        <span class="text-gray-600">Department</span>
+                                        <span class="font-semibold text-gray-900">{{ Auth::user()->staff->department }}</span>
                                     </div>
-                                    <span class="text-sm font-medium text-gray-900">{{ $departmentStaff->count() }}</span>
-                                </div>
-                            @endforeach
-                            @if($staff->pluck('department')->unique()->count() > 5)
-                                <div class="pt-2 border-t border-gray-200">
-                                    <a href="{{ route('staff.index') }}" class="text-sm text-blue-600 hover:text-blue-800">
-                                        View all departments →
-                                    </a>
-                                </div>
+                                @endif
                             @endif
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recent Activity -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Recent Additions</h3>
-                        <div class="space-y-3">
-                            @foreach($staff->sortByDesc('created_at')->take(5) as $recentStaff)
-                                <div class="flex items-center space-x-3">
-                                    <div class="flex-shrink-0">
-                                        <div class="w-8 h-8 rounded-full {{ $recentStaff->staff_type === 'military' ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600' }} flex items-center justify-center">
-                                            <span class="text-xs font-medium">
-                                                {{ strtoupper(substr($recentStaff->name, 0, 1)) }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-medium text-gray-900 truncate">
-                                            {{ $recentStaff->name }}
-                                        </p>
-                                        <p class="text-xs text-gray-500">
-                                            {{ $recentStaff->department }} • {{ $recentStaff->created_at->diffForHumans() }}
-                                        </p>
-                                    </div>
-                                </div>
-                            @endforeach
-                            @if($staff->count() > 5)
-                                <div class="pt-2 border-t border-gray-200">
-                                    <a href="{{ route('staff.index') }}" class="text-sm text-blue-600 hover:text-blue-800">
-                                        View all staff →
-                                    </a>
-                                </div>
-                            @endif
+                            
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-gray-600">Account Created</span>
+                                <span class="font-semibold text-gray-900">{{ Auth::user()->created_at->format('M d, Y') }}</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-gray-600">Last Login</span>
+                                <span class="font-semibold text-gray-900">{{ Auth::user()->updated_at->diffForHumans() }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Location Overview (if locations exist) -->
-            @if($staff->whereNotNull('location')->where('location', '!=', '')->count() > 0)
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h3 class="text-lg font-medium text-gray-900">Staff by Location</h3>
-                    </div>
-                    <div class="p-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            @foreach($staff->whereNotNull('location')->where('location', '!=', '')->groupBy('location') as $location => $locationStaff)
-                                <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4 border border-gray-200">
-                                    <div class="flex items-center justify-between">
-                                        <div>
-                                            <h4 class="text-sm font-medium text-gray-900">{{ $location }}</h4>
-                                            <p class="text-2xl font-bold text-gray-700">{{ $locationStaff->count() }}</p>
-                                            <p class="text-xs text-gray-500">
-                                                {{ $locationStaff->where('staff_type', 'military')->count() }} Military • 
-                                                {{ $locationStaff->where('staff_type', 'civilian')->count() }} Civilian
-                                            </p>
-                                        </div>
-                                        <div class="text-gray-400">
-                                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            @endif
         </div>
     </div>
 </x-app-layout>

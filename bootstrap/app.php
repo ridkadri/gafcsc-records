@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ForcePasswordChange;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,11 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // Register your custom middleware here
         $middleware->alias([
             'staff.permissions' => \App\Http\Middleware\CheckStaffPermissions::class,
-        ]);
-    })
-    ->withMiddleware(function (Middleware $middleware) {
-        $middleware->alias([
             'super.admin' => \App\Http\Middleware\EnsureSuperAdmin::class,
+            'force.password.change' => ForcePasswordChange::class,
         ]);
     })
     

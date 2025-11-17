@@ -47,6 +47,72 @@
                 </div>
             <?php endif; ?>
 
+            
+            <?php if(Auth::user()->isHeadOfDepartment() && Auth::user()->hasAdminPrivileges()): ?>
+                <?php
+                    $currentView = request('view', 'all'); // 'all' or 'department'
+                    $hodStaff = Auth::user()->staff;
+                    $departmentCount = 0;
+                    
+                    if ($hodStaff && $hodStaff->is_hod) {
+                        $departmentCount = \App\Models\Staff::where('head_of_department_id', $hodStaff->id)->count();
+                    }
+                ?>
+
+                <div class="mb-6 bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div class="border-b border-gray-200">
+                        <nav class="flex -mb-px" aria-label="Tabs">
+                            
+                            <a href="<?php echo e(route('staff.index', ['view' => 'department'] + request()->except('view'))); ?>" 
+                               class="group inline-flex items-center py-4 px-6 border-b-2 font-medium text-sm transition-colors <?php echo e($currentView === 'department' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'); ?>">
+                                <svg class="mr-2 h-5 w-5 <?php echo e($currentView === 'department' ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500'); ?>" 
+                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
+                                My Department
+                                <?php if($departmentCount > 0): ?>
+                                    <span class="ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium <?php echo e($currentView === 'department' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'); ?>">
+                                        <?php echo e($departmentCount); ?>
+
+                                    </span>
+                                <?php endif; ?>
+                            </a>
+
+                            
+                            <a href="<?php echo e(route('staff.index', ['view' => 'all'] + request()->except('view'))); ?>" 
+                               class="group inline-flex items-center py-4 px-6 border-b-2 font-medium text-sm transition-colors <?php echo e($currentView === 'all' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'); ?>">
+                                <svg class="mr-2 h-5 w-5 <?php echo e($currentView === 'all' ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500'); ?>" 
+                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                </svg>
+                                All Staff
+                                <span class="ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium <?php echo e($currentView === 'all' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'); ?>">
+                                    <?php echo e($staff->total()); ?>
+
+                                </span>
+                            </a>
+                        </nav>
+                    </div>
+
+                    
+                    <?php if($currentView === 'department'): ?>
+                        <div class="bg-blue-50 px-6 py-3 border-b border-blue-100">
+                            <div class="flex items-center text-sm text-blue-700">
+                                <svg class="h-5 w-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>
+                                    Viewing staff in <strong><?php echo e($hodStaff->department ?? 'your department'); ?></strong> where you are the Head of Department.
+                                    <?php if($departmentCount === 0): ?>
+                                        <span class="ml-1 text-blue-600">No staff assigned yet.</span>
+                                    <?php endif; ?>
+                                </span>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <!-- Search and Filter Section -->
                 <div class="p-6 border-b border-gray-200">
@@ -56,12 +122,25 @@
                             <input type="text" 
                                    name="search" 
                                    value="<?php echo e(request('search')); ?>"
-                                   placeholder="Search by name, service number, rank, appointment, or department..."
+                                   placeholder="Search by name, service number, rank, trade, department..."
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         </div>
                         
                         <!-- Filter Row -->
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                            <!-- Type Filter -->
+                            <div>
+                                <select name="type" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">All Types</option>
+                                    <?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($key); ?>" <?php echo e(request('type') === $key ? 'selected' : ''); ?>>
+                                            <?php echo e($value); ?>
+
+                                        </option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                            </div>
+
                             <!-- Department Filter -->
                             <div>
                                 <select name="department" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -75,35 +154,73 @@
                                 </select>
                             </div>
 
-                            <!-- Rank Filter -->
-                            <?php if(isset($ranks) && $ranks->count() > 0): ?>
-                                <div>
-                                    <select name="rank" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                        <option value="">All Ranks/Titles</option>
-                                        <?php $__currentLoopData = $ranks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $rank): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <option value="<?php echo e($rank); ?>" <?php echo e(request('rank') === $rank ? 'selected' : ''); ?>>
+                            <!-- Rank/Grade Filter (Military & Civilian) -->
+                            <div>
+                                <select name="rank" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">All Ranks/Grades</option>
+                                    
+                                    <?php if(Auth::user()->isChiefClerk()): ?>
+                                        
+                                        <?php $__currentLoopData = $ranks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $rank): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($key); ?>" <?php echo e(request('rank') === $key ? 'selected' : ''); ?>>
                                                 <?php echo e($rank); ?>
 
                                             </option>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    </select>
-                                </div>
-                            <?php endif; ?>
+                                    <?php elseif(Auth::user()->isCapo() || Auth::user()->isPeo()): ?>
+                                        
+                                        <optgroup label="Civilian Grades">
+                                            <?php $__currentLoopData = \App\Models\Staff::getCivilianGrades(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $grade): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($grade); ?>" <?php echo e(request('rank') === $grade ? 'selected' : ''); ?>>
+                                                    <?php echo e($grade); ?>
 
-                            <!-- Appointment Filter -->
-                            <?php if(isset($appointments) && $appointments->count() > 0): ?>
-                                <div>
-                                    <select name="appointment" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                        <option value="">All Appointments</option>
-                                        <?php $__currentLoopData = $appointments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $appointment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <option value="<?php echo e($appointment); ?>" <?php echo e(request('appointment') === $appointment ? 'selected' : ''); ?>>
-                                                <?php echo e($appointment); ?>
+                                                </option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </optgroup>
+                                    <?php else: ?>
+                                        
+                                        <optgroup label="Military Ranks">
+                                            <?php $__currentLoopData = $ranks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $rank): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($key); ?>" <?php echo e(request('rank') === $key ? 'selected' : ''); ?>>
+                                                    <?php echo e($rank); ?>
+
+                                                </option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </optgroup>
+                                        <optgroup label="Civilian Grades">
+                                            <?php $__currentLoopData = \App\Models\Staff::getCivilianGrades(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $grade): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($grade); ?>" <?php echo e(request('rank') === $grade ? 'selected' : ''); ?>>
+                                                    <?php echo e($grade); ?>
+
+                                                </option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </optgroup>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+
+                            <!-- Deployment/Location Filter (For All Staff) -->
+                            <div>
+                                <select name="deployment" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <?php if(Auth::user()->isCapo() || Auth::user()->isPeo()): ?>
+                                        <option value="">All Locations</option>
+                                        <?php $__currentLoopData = $locations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $location): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($location); ?>" <?php echo e(request('deployment') === $location ? 'selected' : ''); ?>>
+                                                <?php echo e($location); ?>
 
                                             </option>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    </select>
-                                </div>
-                            <?php endif; ?>
+                                    <?php else: ?>
+                                        <option value="">All Deployments</option>
+                                        <?php $__currentLoopData = $deployments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $deploy): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($key); ?>" <?php echo e(request('deployment') === $key ? 'selected' : ''); ?>>
+                                                <?php echo e($deploy); ?>
+
+                                            </option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
                             
                             <!-- Action Buttons -->
                             <div class="flex space-x-2">
@@ -112,7 +229,7 @@
                                     Search
                                 </button>
                                 
-                                <?php if(request()->hasAny(['search', 'department', 'rank', 'appointment'])): ?>
+                                <?php if(request()->hasAny(['search', 'type', 'department', 'rank', 'deployment', 'location'])): ?>
                                     <a href="<?php echo e(route('staff.index')); ?>" 
                                        class="flex-1 inline-flex justify-center items-center px-4 py-2 bg-gray-300 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-400 focus:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                         Clear
@@ -129,24 +246,26 @@
                         <div class="flex flex-wrap items-center justify-between gap-4">
                             <div class="text-sm text-gray-600">
                                 Export <?php echo e($staff->total()); ?> staff member(s)
-                                <?php if(request()->hasAny(['search', 'department', 'rank', 'appointment'])): ?>
+                                <?php if(request()->hasAny(['search', 'type', 'department', 'rank', 'deployment'])): ?>
                                     (filtered results)
                                 <?php endif; ?>
                             </div>
                             <div class="flex flex-wrap gap-2">
+                                <a href="<?php echo e(route('staff.preview.pdf', request()->all())); ?>" 
+                                   target="_blank"
+                                   class="inline-flex items-center px-3 py-2 border border-purple-300 shadow-sm text-sm leading-4 font-medium rounded-md text-purple-700 bg-white hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                    Preview PDF
+                                </a>
                                 <a href="<?php echo e(route('staff.export.csv', request()->all())); ?>" 
                                    class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                     <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
                                     </svg>
                                     CSV
-                                </a>
-                                <a href="<?php echo e(route('staff.export.excel', request()->all())); ?>" 
-                                   class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
-                                    </svg>
-                                    Excel
                                 </a>
                                 <a href="<?php echo e(route('staff.export.pdf', request()->all())); ?>" 
                                    class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
@@ -172,38 +291,48 @@
                                     Service Number
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Rank/Title
+                                    Type
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Appointment
+                                    Rank/Grade
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Department
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Actions
+                                    Status
                                 </th>
+                                <!-- Remove the Actions column header -->
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             <?php $__empty_1 = true; $__currentLoopData = $staff; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $member): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                                <tr class="hover:bg-gray-50">
+                                <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='<?php echo e(route('staff.show', $member)); ?>'">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-10 w-10">
                                                 <div class="h-10 w-10 rounded-full <?php echo e($member->isMilitary() ? 'bg-gradient-to-r from-green-600 to-green-800' : 'bg-gradient-to-r from-blue-500 to-purple-600'); ?> flex items-center justify-center">
                                                     <span class="text-white font-medium text-sm">
-                                                        <?php echo e($member->initials); ?>
+                                                        <?php echo e(strtoupper(substr($member->name, 0, 1))); ?>
 
                                                     </span>
                                                 </div>
                                             </div>
                                             <div class="ml-4">
-                                                <div class="text-sm font-medium text-gray-900"><?php echo e($member->name); ?></div>
+                                                <!-- Make the name clickable -->
+                                                <a href="<?php echo e(route('staff.show', $member)); ?>" 
+                                                class="text-sm font-medium text-gray-900 hover:text-blue-600 block">
+                                                    <?php echo e($member->name); ?>
+
+                                                </a>
                                                 <?php if($member->isMilitary()): ?>
-                                                    <div class="text-xs text-green-600 font-medium">Military</div>
+                                                    <?php if($member->sex): ?>
+                                                        <div class="text-xs text-gray-500"><?php echo e($member->sex); ?></div>
+                                                    <?php endif; ?>
                                                 <?php else: ?>
-                                                    <div class="text-xs text-blue-600 font-medium">Civilian</div>
+                                                    <?php if($member->location): ?>
+                                                        <div class="text-xs text-gray-500">📍 <?php echo e($member->location); ?></div>
+                                                    <?php endif; ?>
                                                 <?php endif; ?>
                                             </div>
                                         </div>
@@ -212,68 +341,73 @@
                                         <?php echo e($member->service_number); ?>
 
                                     </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <?php if($member->isMilitary()): ?>
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                🎖️ Military
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                👔 Civilian
+                                            </span>
+                                        <?php endif; ?>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <?php if($member->rank): ?>
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <?php echo e($member->isMilitary() ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'); ?>">
-                                                <?php echo e($member->rank); ?>
+                                        <?php if($member->isMilitary()): ?>
+                                            <?php if($member->rank): ?>
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    <?php echo e($member->rank); ?>
+
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="text-gray-400 italic">No rank</span>
+                                            <?php endif; ?>
+                                        <?php else: ?>
+                                            <?php if($member->present_grade): ?>
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                    <?php echo e($member->present_grade); ?>
+
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="text-gray-400 italic">No grade</span>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <?php echo e($member->department ?: '-'); ?>
+
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <?php if($member->isMilitary() && $member->deployment): ?>
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                <?php echo e($member->deployment); ?>
 
                                             </span>
                                         <?php else: ?>
-                                            <span class="text-gray-400 italic">Not specified</span>
+                                            <span class="text-gray-400 text-xs">-</span>
                                         <?php endif; ?>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <?php if($member->appointment): ?>
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                                                <?php echo e($member->appointment); ?>
-
-                                            </span>
-                                        <?php else: ?>
-                                            <span class="text-gray-400 italic">Not specified</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <?php echo e($member->department); ?>
-
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                        <a href="<?php echo e(route('staff.show', $member)); ?>" 
-                                           class="text-blue-600 hover:text-blue-900">View</a>
-                                        
-                                        <?php if(Auth::user()->canManageStaff()): ?>
-                                            <a href="<?php echo e(route('staff.edit', $member)); ?>" 
-                                               class="text-yellow-600 hover:text-yellow-900">Edit</a>
-                                            
-                                            <form method="POST" action="<?php echo e(route('staff.destroy', $member)); ?>" 
-                                                  class="inline-block" 
-                                                  onsubmit="return confirm('Are you sure you want to delete this staff member?')">
-                                                <?php echo csrf_field(); ?>
-                                                <?php echo method_field('DELETE'); ?>
-                                                <button type="submit" class="text-red-600 hover:text-red-900">
-                                                    Delete
-                                                </button>
-                                            </form>
-                                        <?php endif; ?>
-                                    </td>
+                                    <!-- Remove the Actions column completely -->
                                 </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
+                                    <!-- Update colspan from 7 to 6 since we removed Actions column -->
                                     <td colspan="6" class="px-6 py-12 text-center">
                                         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                                         </svg>
                                         <h3 class="mt-2 text-sm font-medium text-gray-900">No staff found</h3>
                                         <p class="mt-1 text-sm text-gray-500">
-                                            <?php if(request()->hasAny(['search', 'department', 'rank', 'appointment'])): ?>
+                                            <?php if(request()->hasAny(['search', 'type', 'department', 'rank', 'deployment'])): ?>
                                                 Try adjusting your search criteria.
                                             <?php else: ?>
                                                 Get started by adding your first staff member.
                                             <?php endif; ?>
                                         </p>
-                                        <?php if(Auth::user()->canManageStaff() && !request()->hasAny(['search', 'department', 'rank', 'appointment'])): ?>
+                                        <?php if(Auth::user()->canManageStaff() && !request()->hasAny(['search', 'type', 'department', 'rank', 'deployment'])): ?>
                                             <div class="mt-6">
                                                 <a href="<?php echo e(route('staff.create')); ?>" 
-                                                   class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                                                class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
                                                     Add Staff Member
                                                 </a>
                                             </div>

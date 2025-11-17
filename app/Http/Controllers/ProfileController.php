@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -56,5 +57,30 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function updateDateOfBirth(Request $request)
+    {
+        $request->validate([
+            'date_of_birth' => ['required', 'date', 'before:today'],
+            'current_password' => ['required', 'string'],
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors([
+                'current_password' => 'The provided password does not match your current password.',
+            ])->withInput();
+        }
+
+        $user->date_of_birth = $request->date_of_birth;
+        $user->save();
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')->with('success', 'Date of birth updated successfully! Please log in with your new date of birth.');
     }
 }

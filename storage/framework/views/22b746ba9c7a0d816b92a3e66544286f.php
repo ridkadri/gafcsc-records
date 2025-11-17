@@ -97,10 +97,10 @@
                     </div>
                 </div>
 
-                <div>
+               <div>
                     <h2 class="text-3xl font-bold text-gray-900 text-center lg:text-left">Welcome Back</h2>
                     <p class="mt-2 text-sm text-gray-600 text-center lg:text-left">
-                        Sign in to access your staff management dashboard
+                        Sign in with your username and password
                     </p>
                 </div>
 
@@ -113,26 +113,47 @@
                         </div>
                     <?php endif; ?>
 
-                    <form method="POST" action="<?php echo e(route('login')); ?>" class="space-y-6">
+                    <!-- Login Instructions -->
+                    <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-600 mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
+                            <div>
+                                <p class="text-xs text-blue-800 font-medium">Login Information</p>
+                                <p class="text-xs text-blue-700 mt-1">
+                                    Use your <strong>username</strong> and the <strong>default password</strong> to sign in.<br>
+                                    <strong>Default Password:</strong> gafcsc@123<br>
+                                    You will be required to change your password on first login.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="POST" action="<?php echo e(route('login')); ?>" class="space-y-6" id="loginForm">
                         <?php echo csrf_field(); ?>
 
-                        <!-- Email Address -->
+                        <!-- Username -->
                         <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                                Email Address
+                            <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
+                                Username
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                     </svg>
                                 </div>
-                                <input id="email" name="email" type="email" autocomplete="email" required 
-                                       value="<?php echo e(old('email')); ?>"
-                                       class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-                                       placeholder="Enter your email address">
+                                <input id="username" 
+                                    name="username" 
+                                    type="text" 
+                                    required 
+                                    autofocus
+                                    value="<?php echo e(old('username')); ?>"
+                                    class="block w-full pl-10 pr-3 py-2.5 rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                    placeholder="Enter your username">
                             </div>
-                            <?php $__errorArgs = ['email'];
+                            <?php $__errorArgs = ['username'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -152,12 +173,16 @@ unset($__errorArgs, $__bag); ?>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                     </svg>
                                 </div>
-                                <input id="password" name="password" type="password" autocomplete="current-password" required
-                                       class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-                                       placeholder="Enter your password">
+                                <input id="password" 
+                                    name="password" 
+                                    type="password" 
+                                    required 
+                                    autocomplete="current-password"
+                                    class="block w-full pl-10 pr-3 py-2.5 rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                    placeholder="Enter your password">
                             </div>
                             <?php $__errorArgs = ['password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -175,11 +200,19 @@ unset($__errorArgs, $__bag); ?>
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
                                 <input id="remember_me" name="remember" type="checkbox" 
-                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                                 <label for="remember_me" class="ml-2 block text-sm text-gray-700">
                                     Remember me
                                 </label>
                             </div>
+                            
+                            <?php if(Route::has('password.request')): ?>
+                                <div class="text-sm">
+                                    <a href="<?php echo e(route('password.request')); ?>" class="font-medium text-blue-600 hover:text-blue-500">
+                                        Forgot your password?
+                                    </a>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <!-- Sign In Button -->
@@ -193,13 +226,6 @@ unset($__errorArgs, $__bag); ?>
                                 </span>
                                 Sign in to GAFCSC
                             </button>
-                        </div>
-
-                        <!-- Help Text -->
-                        <div class="text-center">
-                            <p class="text-xs text-gray-500">
-                                For technical support, contact your system administrator
-                            </p>
                         </div>
                     </form>
                 </div>
@@ -216,5 +242,101 @@ unset($__errorArgs, $__bag); ?>
             </div>
         </div>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const displayInput = document.getElementById('date_of_birth_display');
+        const hiddenInput = document.getElementById('date_of_birth');
+        const dateHelp = document.getElementById('date-help');
+        
+        // Auto-format date as user types
+        displayInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+            let formattedValue = '';
+            
+            if (value.length >= 1) {
+                formattedValue = value.substring(0, 2);
+            }
+            if (value.length >= 3) {
+                formattedValue += '/' + value.substring(2, 4);
+            }
+            if (value.length >= 5) {
+                formattedValue += '/' + value.substring(4, 8);
+            }
+            
+            e.target.value = formattedValue;
+            
+            // Validate and convert to YYYY-MM-DD for submission
+            if (formattedValue.length === 10) {
+                const parts = formattedValue.split('/');
+                const day = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10);
+                const year = parseInt(parts[2], 10);
+                
+                // Basic validation
+                if (day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1900 && year <= 2100) {
+                    // Convert to YYYY-MM-DD format for the hidden field
+                    const isoDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    hiddenInput.value = isoDate;
+                    
+                    // Update help text to show what will be submitted
+                    dateHelp.innerHTML = `<span class="text-green-600">✓ Valid date (will submit as: ${isoDate})</span>`;
+                    displayInput.classList.remove('border-red-500');
+                    displayInput.classList.add('border-green-500');
+                } else {
+                    hiddenInput.value = '';
+                    dateHelp.innerHTML = '<span class="text-red-600">Invalid date. Please use DD/MM/YYYY format</span>';
+                    displayInput.classList.add('border-red-500');
+                    displayInput.classList.remove('border-green-500');
+                }
+            } else {
+                hiddenInput.value = '';
+                dateHelp.innerHTML = 'Enter date as DD/MM/YYYY (e.g., 15/03/1985)';
+                displayInput.classList.remove('border-red-500', 'border-green-500');
+            }
+        });
+        
+        // Handle paste events
+        displayInput.addEventListener('paste', function(e) {
+            e.preventDefault();
+            let pasteData = (e.clipboardData || window.clipboardData).getData('text');
+            
+            // Try to parse different date formats
+            let dateRegex = /(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/;
+            let match = pasteData.match(dateRegex);
+            
+            if (match) {
+                let day = match[1].padStart(2, '0');
+                let month = match[2].padStart(2, '0');
+                let year = match[3];
+                displayInput.value = `${day}/${month}/${year}`;
+                displayInput.dispatchEvent(new Event('input'));
+            }
+        });
+        
+        // Prevent form submission if date is invalid
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            if (!hiddenInput.value) {
+                e.preventDefault();
+                displayInput.focus();
+                dateHelp.innerHTML = '<span class="text-red-600">Please enter a valid date before submitting</span>';
+                displayInput.classList.add('border-red-500');
+                return false;
+            }
+        });
+        
+        // If there's an old value (e.g., after validation error), convert it for display
+        <?php if(old('date_of_birth')): ?>
+            const oldDate = '<?php echo e(old('date_of_birth')); ?>';
+            if (oldDate) {
+                const parts = oldDate.split('-');
+                if (parts.length === 3) {
+                    displayInput.value = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                    hiddenInput.value = oldDate;
+                }
+            }
+        <?php endif; ?>
+    });
+    </script>
 </body>
 </html><?php /**PATH /Users/ridwankadri/Desktop/code/gafcsc-management/resources/views/auth/login.blade.php ENDPATH**/ ?>

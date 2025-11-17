@@ -23,23 +23,9 @@ class InventoryCategoryController extends Controller
     /**
      * Show the form for creating a new category.
      */
-    // In your InventoryController.php create method:
-    public function create(Request $request)
+    public function create()
     {
-        $categories = InventoryCategory::active()->orderBy('name')->get();
-        $locations = InventoryItem::active()
-                                ->whereNotNull('location')
-                                ->distinct()
-                                ->pluck('location')
-                                ->sort();
-        
-        // Pre-select category if provided
-        $selectedCategory = null;
-        if ($request->has('category_id')) {
-            $selectedCategory = InventoryCategory::find($request->category_id);
-        }
-        
-        return view('inventory.create', compact('categories', 'locations', 'selectedCategory'));
+        return view('inventory.categories.create');
     }
 
     /**
@@ -72,61 +58,61 @@ class InventoryCategoryController extends Controller
     /**
      * Display the specified category.
      */
-    public function show(InventoryCategory $inventoryCategory)
+    public function show(InventoryCategory $category)
     {
         // Load category with items and their relationships
-        $inventoryCategory->loadCount('items');
+        $category->loadCount('items');
 
         // Get paginated items for this category
-        $items = $inventoryCategory->items()
+        $items = $category->items()
             ->with(['activeAssignments.staff'])
             ->paginate(10);
 
         // Calculate statistics based on your existing InventoryItem structure
         $stats = [
-            'total_items' => $inventoryCategory->items()->count(),
-            'available_items' => $inventoryCategory->items()->where('status', 'active')->count(),
-            'checked_out_items' => $inventoryCategory->items()->whereHas('activeAssignments')->count(),
-            'maintenance_items' => $inventoryCategory->items()->where('status', 'maintenance')->count(),
-            'low_stock_items' => $inventoryCategory->items()
+            'total_items' => $category->items()->count(),
+            'available_items' => $category->items()->where('status', 'active')->count(),
+            'checked_out_items' => $category->items()->whereHas('activeAssignments')->count(),
+            'maintenance_items' => $category->items()->where('status', 'maintenance')->count(),
+            'low_stock_items' => $category->items()
                 ->whereRaw('available_quantity <= minimum_stock_level')
                 ->where('minimum_stock_level', '>', 0)
                 ->count(),
         ];
 
         // Get related categories (same first letter of code or similar names)
-        $relatedCategories = InventoryCategory::where('id', '!=', $inventoryCategory->id)
+        $relatedCategories = InventoryCategory::where('id', '!=', $category->id)
             ->where('is_active', true)
-            ->where(function ($query) use ($inventoryCategory) {
-                $query->where('code', 'like', substr($inventoryCategory->code, 0, 1) . '%')
-                    ->orWhere('name', 'like', '%' . explode(' ', $inventoryCategory->name)[0] . '%');
+            ->where(function ($query) use ($category) {
+                $query->where('code', 'like', substr($category->code, 0, 1) . '%')
+                    ->orWhere('name', 'like', '%' . explode(' ', $category->name)[0] . '%');
             })
             ->withCount('items')
             ->limit(5)
             ->get();
         
-        return view('inventory.categories.show', compact('inventoryCategory', 'items', 'stats', 'relatedCategories'));
+        return view('inventory.categories.show', compact('category', 'items', 'stats', 'relatedCategories'));
     }
 
     /**
      * Show the form for editing the specified category.
      */
-    public function edit(InventoryCategory $inventoryCategory)
+    public function edit(InventoryCategory $category)
     {
         // Load items count for display
-        $inventoryCategory->loadCount('items');
+        $category->loadCount('items');
 
-        return view('inventory.categories.edit', compact('inventoryCategory'));
+        return view('inventory.categories.edit', compact('category'));
     }
 
     /**
      * Update the specified category.
      */
-    public function update(Request $request, InventoryCategory $inventoryCategory)
+    public function update(Request $request, InventoryCategory $category)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:inventory_categories,name,' . $inventoryCategory->id,
-            'code' => 'required|string|max:10|unique:inventory_categories,code,' . $inventoryCategory->id,
+            'name' => 'required|string|max:255|unique:inventory_categories,name,' . $category->id,
+            'code' => 'required|string|max:10|unique:inventory_categories,code,' . $category->id,
             'description' => 'nullable|string',
             'color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
             'requires_approval' => 'boolean',
@@ -140,24 +126,24 @@ class InventoryCategoryController extends Controller
         $validated['requires_approval'] = $request->has('requires_approval');
         $validated['is_active'] = $request->has('is_active');
 
-        $inventoryCategory->update($validated);
+        $category->update($validated);
 
-        return redirect()->route('inventory.categories.show', $inventoryCategory)
+        return redirect()->route('inventory.categories.show', $category)
                         ->with('success', 'Category updated successfully!');
     }
 
     /**
      * Remove the specified category from storage.
      */
-    public function destroy(InventoryCategory $inventoryCategory)
+    public function destroy(InventoryCategory $category)
     {
         // Check if category has items
-        if ($inventoryCategory->items()->exists()) {
-            return redirect()->route('inventory.categories.show', $inventoryCategory)
+        if ($category->items()->exists()) {
+            return redirect()->route('inventory.categories.show', $category)
                            ->with('error', 'Cannot delete category that has items assigned to it.');
         }
 
-        $inventoryCategory->delete();
+        $category->delete();
 
         return redirect()->route('inventory.categories.index')
                         ->with('success', 'Category deleted successfully!');
@@ -166,13 +152,13 @@ class InventoryCategoryController extends Controller
     /**
      * Toggle category status.
      */
-    public function toggleStatus(InventoryCategory $inventoryCategory)
+    public function toggleStatus(InventoryCategory $category)
     {
-        $inventoryCategory->update([
-            'is_active' => !$inventoryCategory->is_active
+        $category->update([
+            'is_active' => !$category->is_active
         ]);
 
-        $status = $inventoryCategory->is_active ? 'activated' : 'deactivated';
+        $status = $category->is_active ? 'activated' : 'deactivated';
 
         return redirect()->back()
                         ->with('success', "Category {$status} successfully!");
@@ -181,91 +167,26 @@ class InventoryCategoryController extends Controller
     /**
      * Show items with low stock in this category.
      */
-    public function lowStock(InventoryCategory $inventoryCategory)
+    public function lowStock(InventoryCategory $category)
     {
-        $lowStockItems = $inventoryCategory->items()
+        $lowStockItems = $category->items()
             ->whereRaw('available_quantity <= minimum_stock_level')
             ->where('minimum_stock_level', '>', 0)
             ->with(['activeAssignments.staff'])
             ->paginate(15);
 
-        return view('inventory.categories.low-stock', compact('inventoryCategory', 'lowStockItems'));
+        return view('inventory.categories.low-stock', compact('category', 'lowStockItems'));
     }
 
     /**
      * Show all items in this category.
      */
-    public function items(InventoryCategory $inventoryCategory)
+    public function items(InventoryCategory $category)
     {
-        $items = $inventoryCategory->items()
+        $items = $category->items()
             ->with(['activeAssignments.staff'])
             ->paginate(20);
 
-        return view('inventory.categories.items', compact('inventoryCategory', 'items'));
-    }
-
-    /**
-     * Show items that need inspection in this category.
-     */
-    public function needsInspection(InventoryCategory $inventoryCategory)
-    {
-        $inspectionItems = $inventoryCategory->items()
-            ->where(function ($query) {
-                $query->where('status', 'needs_inspection')
-                    ->orWhere('next_inspection', '<', now())
-                    ->orWhereNull('next_inspection');
-            })
-            ->with(['activeAssignments.staff'])
-            ->paginate(15);
-
-        return view('inventory.categories.needs-inspection', compact('inventoryCategory', 'inspectionItems'));
-    }
-
-        /**
-     * Schedule inspection for single item
-     */
-    public function scheduleInspection(Request $request, InventoryItem $item)
-    {
-        $request->validate([
-            'next_inspection' => 'required|date|after:today',
-            'inspection_notes' => 'nullable|string',
-        ]);
-
-        $item->update([
-            'next_inspection' => $request->next_inspection,
-            'inspection_notes' => $request->inspection_notes,
-        ]);
-
-        return redirect()->back()->with('success', 'Inspection scheduled successfully!');
-    }
-
-    /**
-     * Mark single item as inspected
-     */
-    public function markInspected(InventoryItem $item)
-    {
-        $item->update([
-            'last_inspection_date' => now(),
-            'next_inspection' => now()->addMonths(6), // or your standard interval
-            'status' => 'active',
-        ]);
-
-        return response()->json(['success' => true]);
-    }
-
-    /**
-     * Bulk mark items as inspected
-     */
-    public function bulkMarkInspected(Request $request)
-    {
-        $itemIds = $request->input('items', []);
-        
-        InventoryItem::whereIn('id', $itemIds)->update([
-            'last_inspection_date' => now(),
-            'next_inspection' => now()->addMonths(6),
-            'status' => 'active',
-        ]);
-
-        return response()->json(['success' => true]);
+        return view('inventory.categories.items', compact('category', 'items'));
     }
 }

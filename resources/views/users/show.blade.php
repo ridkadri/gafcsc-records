@@ -41,7 +41,14 @@
                                 
                                 <!-- Role Badge -->
                                 <div class="flex items-center space-x-2">
-                                    @if($user->role === 'admin')
+                                    @if($user->role === 'super_admin')
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
+                                            </svg>
+                                            Super Administrator
+                                        </span>
+                                    @elseif($user->role === 'admin')
                                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
@@ -146,7 +153,40 @@
                     <div class="bg-gray-50 rounded-lg p-6 border">
                         <h3 class="text-lg font-medium text-gray-900 mb-4">Permissions & Access</h3>
                         
-                        @if($user->role === 'admin')
+                        @if($user->role === 'super_admin')
+                            <div class="space-y-3">
+                                <div class="flex items-center text-red-800">
+                                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span class="text-sm font-medium">UNRESTRICTED SYSTEM ACCESS</span>
+                                </div>
+                                <div class="flex items-center text-green-800">
+                                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span class="text-sm">Can create, manage, and delete all administrator accounts</span>
+                                </div>
+                                <div class="flex items-center text-green-800">
+                                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span class="text-sm">Full control over all staff members and records</span>
+                                </div>
+                                <div class="flex items-center text-green-800">
+                                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span class="text-sm">Complete inventory management and system configuration</span>
+                                </div>
+                                <div class="flex items-center text-green-800">
+                                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span class="text-sm">System-wide analytics, reports, and security management</span>
+                                </div>
+                            </div>
+                        @elseif($user->role === 'admin')
                             <div class="space-y-3">
                                 <div class="flex items-center text-green-800">
                                     <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">

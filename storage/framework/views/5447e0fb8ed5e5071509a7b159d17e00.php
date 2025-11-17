@@ -147,16 +147,16 @@
 
                                                 <!-- Reset Password Button -->
                                                 <?php if(auth()->user()->canResetPassword($user)): ?>
-                                                    <a href="<?php echo e(route('users.reset-form', $user)); ?>" class="text-yellow-600 hover:text-yellow-900" title="Reset Password">
+                                                    <a href="<?php echo e(route('users.reset-form', $user)); ?>" class="text-yellow-600 hover:text-yellow-900" title="Reset to Default Password">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1721 9z"></path>
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                                                         </svg>
                                                     </a>
                                                 <?php else: ?>
                                                     <?php if($user->isSuperAdmin() && !auth()->user()->isSuperAdmin()): ?>
                                                         <span class="text-red-400" title="Super Admin passwords cannot be reset by regular admins">
                                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636"></path>
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636"/>
                                                             </svg>
                                                         </span>
                                                     <?php endif; ?>

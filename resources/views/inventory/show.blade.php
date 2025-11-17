@@ -35,12 +35,14 @@
                         <!-- Main Info -->
                         <div class="lg:col-span-2">
                             <div class="flex items-start space-x-4">
+                                @if($item->category)
                                 <div class="flex-shrink-0 h-16 w-16">
                                     <div class="h-16 w-16 rounded-lg flex items-center justify-center text-white font-bold text-lg"
                                          style="background-color: {{ $item->category->color }}">
                                         {{ $item->category->code }}
                                     </div>
                                 </div>
+                                @endif
                                 <div class="flex-1">
                                     <h1 class="text-2xl font-bold text-gray-900">{{ $item->name }}</h1>
                                     <p class="text-lg text-gray-600 mb-2">{{ $item->item_code }}</p>
@@ -53,10 +55,16 @@
                                     
                                     <!-- Tags -->
                                     <div class="flex flex-wrap gap-2">
+                                        @if($item->category)
                                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white"
                                               style="background-color: {{ $item->category->color }}">
                                             {{ $item->category->name }}
                                         </span>
+                                        @else
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                                            No Category
+                                        </span>
+                                        @endif
                                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $item->condition_color }}">
                                             {{ ucfirst($item->condition) }}
                                         </span>
@@ -355,7 +363,11 @@
                                             {{ $transaction->quantity }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $transaction->processedBy->name }}
+                                            @if($transaction->processedBy)
+                                                {{ $transaction->processedBy->name }}
+                                            @else
+                                                <span class="text-gray-400">System</span>
+                                            @endif
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-500">
                                             {{ $transaction->notes }}

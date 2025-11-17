@@ -4,14 +4,14 @@
 <div class="flex justify-between items-center">
     <div class="flex items-center space-x-4">
         <div class="h-16 w-16 rounded-lg flex items-center justify-center text-white font-bold text-lg"
-             style="background-color: {{ $inventoryCategory->color }};">
-            {{ strtoupper(substr($inventoryCategory->code, 0, 4)) }}
+             style="background-color: {{ $category->color }};">
+            {{ strtoupper(substr($category->code, 0, 4)) }}
         </div>
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">{{ $inventoryCategory->name }}</h1>
+            <h1 class="text-2xl font-bold text-gray-900">{{ $category->name }}</h1>
             <div class="flex items-center space-x-4 text-sm text-gray-600">
-                <span>Code: <span class="font-mono">{{ $inventoryCategory->code }}</span></span>
-                @if($inventoryCategory->requires_approval)
+                <span>Code: <span class="font-mono">{{ $category->code }}</span></span>
+                @if($category->requires_approval)
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
@@ -19,21 +19,21 @@
                         Requires Approval
                     </span>
                 @endif
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $inventoryCategory->is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $category->is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
                     <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        @if($inventoryCategory->is_active)
+                        @if($category->is_active)
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                         @else
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
                         @endif
                     </svg>
-                    {{ $inventoryCategory->is_active ? 'Active' : 'Inactive' }}
+                    {{ $category->is_active ? 'Active' : 'Inactive' }}
                 </span>
             </div>
         </div>
     </div>
     <div class="flex space-x-3">
-        <a href="{{ route('inventory.categories.edit', $inventoryCategory) }}" 
+        <a href="{{ route('inventory.categories.edit', $category) }}" 
            class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
@@ -66,25 +66,25 @@
                         <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Category Name</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ $inventoryCategory->name }}</dd>
+                                <dd class="mt-1 text-sm text-gray-900">{{ $category->name }}</dd>
                             </div>
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Category Code</dt>
-                                <dd class="mt-1 text-sm text-gray-900 font-mono">{{ $inventoryCategory->code }}</dd>
+                                <dd class="mt-1 text-sm text-gray-900 font-mono">{{ $category->code }}</dd>
                             </div>
                             <div class="sm:col-span-2">
                                 <dt class="text-sm font-medium text-gray-500">Description</dt>
                                 <dd class="mt-1 text-sm text-gray-900">
-                                    {{ $inventoryCategory->description ?: 'No description provided.' }}
+                                    {{ $category->description ?: 'No description provided.' }}
                                 </dd>
                             </div>
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Created</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ $inventoryCategory->created_at->format('M j, Y \a\t g:i A') }}</dd>
+                                <dd class="mt-1 text-sm text-gray-900">{{ $category->created_at->format('M j, Y \a\t g:i A') }}</dd>
                             </div>
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Last Updated</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ $inventoryCategory->updated_at->format('M j, Y \a\t g:i A') }}</dd>
+                                <dd class="mt-1 text-sm text-gray-900">{{ $category->updated_at->format('M j, Y \a\t g:i A') }}</dd>
                             </div>
                         </dl>
                     </div>
@@ -94,8 +94,8 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
                         <h3 class="text-lg font-medium text-gray-900">Items in this Category</h3>
-                        @if($inventoryCategory->is_active)
-                            <a href="{{ route('inventory.create') }}?category_id={{ $inventoryCategory->id }}" 
+                        @if($category->is_active)
+                            <a href="{{ route('inventory.create') }}?category_id={{ $category->id }}" 
                                class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
@@ -123,7 +123,7 @@
                                                 <td class="px-6 py-4 whitespace-nowrap">
                                                     <div class="flex items-center">
                                                         <div class="h-8 w-8 rounded-lg flex items-center justify-center text-white text-xs font-bold mr-3"
-                                                             style="background-color: {{ $inventoryCategory->color }};">
+                                                             style="background-color: {{ $category->color }};">
                                                             {{ strtoupper(substr($item->sku ?? $item->id, -2)) }}
                                                         </div>
                                                         <div>
@@ -182,9 +182,9 @@
                                 </svg>
                                 <h3 class="mt-2 text-sm font-medium text-gray-900">No items found</h3>
                                 <p class="mt-1 text-sm text-gray-500">No items have been assigned to this category yet.</p>
-                                @if($inventoryCategory->is_active)
+                                @if($category->is_active)
                                     <div class="mt-6">
-                                        <a href="{{ route('inventory.create') }}?category_id={{ $inventoryCategory->id }}" 
+                                        <a href="{{ route('inventory.create') }}?category_id={{ $category->id }}" 
                                            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
@@ -245,8 +245,8 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Category Badge</label>
                                 <div class="h-16 w-16 rounded-lg flex items-center justify-center text-white font-bold text-lg mx-auto"
-                                     style="background-color: {{ $inventoryCategory->color }};">
-                                    {{ strtoupper(substr($inventoryCategory->code, 0, 4)) }}
+                                     style="background-color: {{ $category->color }};">
+                                    {{ strtoupper(substr($category->code, 0, 4)) }}
                                 </div>
                             </div>
                             
@@ -255,8 +255,8 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Category Tag</label>
                                 <div class="text-center">
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white"
-                                          style="background-color: {{ $inventoryCategory->color }};">
-                                        {{ $inventoryCategory->name }}
+                                          style="background-color: {{ $category->color }};">
+                                        {{ $category->name }}
                                     </span>
                                 </div>
                             </div>
@@ -265,8 +265,8 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Color Code</label>
                                 <div class="flex items-center space-x-2">
-                                    <div class="w-6 h-6 rounded border border-gray-300" style="background-color: {{ $inventoryCategory->color }};"></div>
-                                    <span class="text-sm font-mono text-gray-600">{{ strtoupper($inventoryCategory->color) }}</span>
+                                    <div class="w-6 h-6 rounded border border-gray-300" style="background-color: {{ $category->color }};"></div>
+                                    <span class="text-sm font-mono text-gray-600">{{ strtoupper($category->color) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -279,8 +279,8 @@
                         <h3 class="text-lg font-medium text-gray-900">Quick Actions</h3>
                     </div>
                     <div class="p-6 space-y-3">
-                        @if($inventoryCategory->is_active)
-                            <a href="{{ route('inventory.create') }}?category_id={{ $inventoryCategory->id }}" 
+                        @if($category->is_active)
+                            <a href="{{ route('inventory.create') }}?category_id={{ $category->id }}" 
                                class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                 <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
@@ -289,7 +289,7 @@
                             </a>
                         @endif
                         
-                        <a href="{{ route('inventory.categories.edit', $inventoryCategory) }}" 
+                        <a href="{{ route('inventory.categories.edit', $category) }}" 
                            class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
@@ -298,7 +298,7 @@
                         </a>
 
                         @if(($stats['total_items'] ?? 0) > 0)
-                            <a href="{{ route('inventory.index') }}?category={{ $inventoryCategory->id }}" 
+                            <a href="{{ route('inventory.index') }}?category={{ $category->id }}" 
                                class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                 <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>

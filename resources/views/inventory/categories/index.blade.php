@@ -68,7 +68,7 @@
                                         </div>
                                         @if($category->items_count > 0)
                                             <div class="text-center">
-                                                <div class="text-2xl font-bold text-green-600">${{ number_format($category->total_value, 0) }}</div>
+                                                <div class="text-2xl font-bold text-green-600">${{ number_format($category->total_value ?? 0, 0) }}</div>
                                                 <div class="text-xs text-gray-500">Total Value</div>
                                             </div>
                                         @else

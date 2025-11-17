@@ -23,13 +23,30 @@ class CheckStaffPermissions
 
         switch ($permission) {
             case 'manage':
+                // Can add/edit/delete staff
                 if (!$user->canManageStaff()) {
                     abort(403, 'You do not have permission to manage staff.');
                 }
                 break;
+                
             case 'view':
+                // Can view staff pages
                 if (!$user->canViewStaff()) {
                     abort(403, 'You do not have permission to view staff.');
+                }
+                break;
+                
+            case 'view_inventory':
+                // Can view inventory
+                if (!$user->canViewInventory()) {
+                    abort(403, 'You do not have permission to view inventory.');
+                }
+                break;
+                
+            case 'manage_inventory':
+                // Can manage inventory
+                if (!$user->canManageInventory()) {
+                    abort(403, 'You do not have permission to manage inventory.');
                 }
                 break;
         }

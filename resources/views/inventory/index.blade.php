@@ -188,31 +188,6 @@
                     </div>
                 </div>
                 @endif
-
-                <!-- Inspection Due -->
-                @if($stats['needs_inspection'] > 0)
-                <div class="bg-white overflow-hidden shadow rounded-lg">
-                    <div class="px-4 py-5 sm:p-6">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h3 class="text-lg font-medium text-gray-900">Inspection Due</h3>
-                                <p class="text-sm text-gray-500">{{ $stats['needs_inspection'] }} items need inspection</p>
-                            </div>
-                            <div class="flex-shrink-0">
-                                <span class="inline-flex items-center px-3 py-2 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
-                                    {{ $stats['needs_inspection'] }}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="mt-4">
-                            <a href="{{ route('inventory.needs-inspection') }}" 
-                               class="text-blue-600 hover:text-blue-900 font-medium">
-                                View details →
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                @endif
             </div>
 
             <!-- Main Content -->

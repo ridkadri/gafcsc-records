@@ -1,93 +1,136 @@
 @extends('layouts.inventory')
-@section('header')
-    <div class="flex justify-between items-center">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Inventory Assignments') }}
-        </h2>
-        @if(Auth::user()->canManageStaff())
-            <a href="{{ route('inventory.assignments.create') }}" 
-                class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:bg-green-700 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
-                    <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1V8a1 1 0 00-1-1h-3z"/>
-                </svg>
-                Check Out Item
-            </a>
-        @endif
-    </div>
-@endsection
-@section('content')
+    @section('header')
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('GAFCSC Inventory Management') }}
+            </h2>
+            @if(Auth::user()->canManageStaff())
+                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                    <a href="{{ route('inventory.create') }}" 
+                        class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="hidden sm:inline">Add Item</span>
+                        <span class="sm:hidden">Add</span>
+                    </a>
+                    <a href="{{ route('inventory.assignments.create') }}" 
+                        class="inline-flex items-center justify-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:bg-green-700 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
+                            <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1V8a1 1 0 00-1-1h-3z"/>
+                        </svg>
+                        <span class="hidden sm:inline">Check Out</span>
+                        <span class="sm:hidden">Check Out</span>
+                    </a>
+                </div>
+            @endif
+        </div>
+    @endsection
+    
+    @section('content')
+    <div class="py-6 lg:py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Permission Notice for Viewers -->
+            @if(Auth::user()->isViewer())
+                <div class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-blue-700">
+                                You have <strong>View-only</strong> access to inventory. Contact an administrator for check-out/check-in permissions.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            @endif
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Statistics Dashboard -->
-            <div class="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-3">
-                <!-- Total Active -->
+            <div class="mb-6 lg:mb-8 grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
+                <!-- Total Items -->
                 <div class="bg-white overflow-hidden shadow rounded-lg">
-                    <div class="p-5">
+                    <div class="p-4 sm:p-5">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
-                                <div class="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <div class="w-6 h-6 sm:w-8 sm:h-8 bg-blue-500 rounded-md flex items-center justify-center">
+                                    <svg class="w-3 h-3 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="ml-3 sm:ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-xs sm:text-sm font-medium text-gray-500 truncate">Total Items</dt>
+                                    <dd class="text-sm sm:text-lg font-medium text-gray-900">{{ number_format($stats['total_items']) }}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Value -->
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="p-4 sm:p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <div class="w-6 h-6 sm:w-8 sm:h-8 bg-green-500 rounded-md flex items-center justify-center">
+                                    <svg class="w-3 h-3 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.51-1.31c-.562-.649-1.413-1.076-2.353-1.253V5z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="ml-3 sm:ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-xs sm:text-sm font-medium text-gray-500 truncate">Total Value</dt>
+                                    <dd class="text-sm sm:text-lg font-medium text-gray-900">${{ number_format($stats['total_value'], 2) }}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Assignments -->
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="p-4 sm:p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <div class="w-6 h-6 sm:w-8 sm:h-8 bg-yellow-500 rounded-md flex items-center justify-center">
+                                    <svg class="w-3 h-3 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                     </svg>
                                 </div>
                             </div>
-                            <div class="ml-5 w-0 flex-1">
+                            <div class="ml-3 sm:ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt class="text-sm font-medium text-gray-500 truncate">Active Assignments</dt>
-                                    <dd class="text-lg font-medium text-gray-900">{{ number_format($stats['total_active']) }}</dd>
+                                    <dt class="text-xs sm:text-sm font-medium text-gray-500 truncate">Active</dt>
+                                    <dd class="text-sm sm:text-lg font-medium text-gray-900">{{ number_format($stats['active_assignments']) }}</dd>
                                 </dl>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Total Overdue -->
+                <!-- Alerts (Low Stock + Overdue) -->
                 <div class="bg-white overflow-hidden shadow rounded-lg">
-                    <div class="p-5">
+                    <div class="p-4 sm:p-5">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
-                                <div class="w-8 h-8 {{ $stats['total_overdue'] > 0 ? 'bg-red-500' : 'bg-gray-400' }} rounded-md flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                <div class="w-6 h-6 sm:w-8 sm:h-8 {{ ($stats['low_stock_count'] + $stats['overdue_assignments']) > 0 ? 'bg-red-500' : 'bg-gray-400' }} rounded-md flex items-center justify-center">
+                                    <svg class="w-3 h-3 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                                     </svg>
                                 </div>
                             </div>
-                            <div class="ml-5 w-0 flex-1">
+                            <div class="ml-3 sm:ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt class="text-sm font-medium text-gray-500 truncate">Overdue Returns</dt>
-                                    <dd class="text-lg font-medium text-gray-900">{{ number_format($stats['total_overdue']) }}</dd>
-                                </dl>
-                            </div>
-                        </div>
-                    </div>
-                    @if($stats['total_overdue'] > 0)
-                        <div class="bg-gray-50 px-5 py-3">
-                            <div class="text-sm">
-                                <a href="{{ route('inventory.assignments.overdue') }}" class="font-medium text-red-600 hover:text-red-900">
-                                    View overdue items →
-                                </a>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-
-                <!-- Total Returned -->
-                <div class="bg-white overflow-hidden shadow rounded-lg">
-                    <div class="p-5">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <div class="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt class="text-sm font-medium text-gray-500 truncate">Total Returned</dt>
-                                    <dd class="text-lg font-medium text-gray-900">{{ number_format($stats['total_returned']) }}</dd>
+                                    <dt class="text-xs sm:text-sm font-medium text-gray-500 truncate">Alerts</dt>
+                                    <dd class="text-sm sm:text-lg font-medium text-gray-900">{{ $stats['low_stock_count'] + $stats['overdue_assignments'] }}</dd>
                                 </dl>
                             </div>
                         </div>
@@ -95,53 +138,119 @@
                 </div>
             </div>
 
+            <!-- Quick Actions & Alerts -->
+            <div class="mb-6 lg:mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+                <!-- Low Stock Items -->
+                @if($stats['low_stock_count'] > 0)
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="px-4 py-4 sm:p-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-base sm:text-lg font-medium text-gray-900">Low Stock Alert</h3>
+                                <p class="text-xs sm:text-sm text-gray-500 truncate">{{ $stats['low_stock_count'] }} items need restocking</p>
+                            </div>
+                            <div class="flex-shrink-0 ml-2">
+                                <span class="inline-flex items-center px-2 sm:px-3 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-red-100 text-red-800">
+                                    {{ $stats['low_stock_count'] }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mt-3 sm:mt-4">
+                            <a href="{{ route('inventory.low-stock') }}" 
+                               class="text-blue-600 hover:text-blue-900 font-medium text-sm">
+                                View details →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                <!-- Overdue Assignments -->
+                @if($stats['overdue_assignments'] > 0)
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="px-4 py-4 sm:p-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-base sm:text-lg font-medium text-gray-900">Overdue Returns</h3>
+                                <p class="text-xs sm:text-sm text-gray-500 truncate">{{ $stats['overdue_assignments'] }} items are overdue</p>
+                            </div>
+                            <div class="flex-shrink-0 ml-2">
+                                <span class="inline-flex items-center px-2 sm:px-3 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-red-100 text-red-800">
+                                    {{ $stats['overdue_assignments'] }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mt-3 sm:mt-4">
+                            <a href="{{ route('inventory.assignments.overdue') }}" 
+                               class="text-blue-600 hover:text-blue-900 font-medium text-sm">
+                                View details →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </div>
+
+            <!-- Main Content -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <!-- Search and Filter Section -->
-                <div class="p-6 border-b border-gray-200">
-                    <form method="GET" action="{{ route('inventory.assignments.index') }}" class="space-y-4">
+                <div class="p-4 sm:p-6 border-b border-gray-200">
+                    <form method="GET" action="{{ route('inventory.index') }}" class="space-y-4">
                         <!-- Search Input -->
                         <div class="w-full">
                             <input type="text" 
                                    name="search" 
                                    value="{{ request('search') }}"
-                                   placeholder="Search by staff name, service number, or item name..."
-                                   class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                   placeholder="Search by name, item code, barcode..."
+                                   class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
                         </div>
                         
                         <!-- Filter Row -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <!-- Status Filter -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+                            <!-- Category Filter -->
                             <div>
-                                <select name="status" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    <option value="">All Status</option>
-                                    <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
-                                    <option value="overdue" {{ request('status') === 'overdue' ? 'selected' : '' }}>Overdue</option>
-                                    <option value="returned" {{ request('status') === 'returned' ? 'selected' : '' }}>Returned</option>
-                                    <option value="lost" {{ request('status') === 'lost' ? 'selected' : '' }}>Lost</option>
+                                <select name="category" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                                    <option value="">All Categories</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
 
-                            <!-- Staff Filter -->
+                            <!-- Condition Filter -->
                             <div>
-                                <select name="staff_id" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    <option value="">All Staff</option>
-                                    @foreach($staff as $staffMember)
-                                        <option value="{{ $staffMember->id }}" {{ request('staff_id') == $staffMember->id ? 'selected' : '' }}>
-                                            {{ $staffMember->name }} ({{ $staffMember->service_number }})
+                                <select name="condition" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                                    <option value="">All Conditions</option>
+                                    <option value="good" {{ request('condition') === 'good' ? 'selected' : '' }}>Good</option>
+                                    <option value="fair" {{ request('condition') === 'fair' ? 'selected' : '' }}>Fair</option>
+                                    <option value="poor" {{ request('condition') === 'poor' ? 'selected' : '' }}>Poor</option>
+                                    <option value="damaged" {{ request('condition') === 'damaged' ? 'selected' : '' }}>Damaged</option>
+                                </select>
+                            </div>
+
+                            <!-- Location Filter -->
+                            <div>
+                                <select name="location" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                                    <option value="">All Locations</option>
+                                    @foreach($locations as $location)
+                                        <option value="{{ $location }}" {{ request('location') === $location ? 'selected' : '' }}>
+                                            {{ $location }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
                             
                             <!-- Action Buttons -->
-                            <div class="flex space-x-2">
+                            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                                 <button type="submit" 
                                         class="flex-1 inline-flex justify-center items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                     Search
                                 </button>
                                 
-                                @if(request()->hasAny(['search', 'status', 'staff_id']))
-                                    <a href="{{ route('inventory.assignments.index') }}" 
+                                @if(request()->hasAny(['search', 'category', 'condition', 'location']))
+                                    <a href="{{ route('inventory.index') }}" 
                                        class="flex-1 inline-flex justify-center items-center px-4 py-2 bg-gray-300 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-400 focus:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                         Clear
                                     </a>
@@ -151,139 +260,203 @@
                     </form>
                 </div>
 
-                <!-- Assignments Table -->
-                <div class="overflow-x-auto">
+                <!-- Mobile Card View (sm and below) -->
+                <div class="sm:hidden">
+                    <div class="divide-y divide-gray-200">
+                        @forelse($items as $item)
+                            <div class="p-4 {{ $item->isLowStock() ? 'bg-red-50' : 'bg-white' }}">
+                                <div class="flex items-start space-x-3">
+                                    <!-- Item Icon -->
+                                    <div class="flex-shrink-0">
+                                        <div class="h-10 w-10 rounded-lg flex items-center justify-center text-white font-bold text-sm"
+                                             style="background-color: {{ $item->category->color }}">
+                                            {{ $item->category->code }}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Item Info -->
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-start justify-between">
+                                            <div class="flex-1">
+                                                <h3 class="text-sm font-medium text-gray-900 truncate">{{ $item->name }}</h3>
+                                                <p class="text-xs text-gray-500">{{ $item->item_code }}</p>
+                                                @if($item->barcode)
+                                                    <p class="text-xs text-gray-400 font-mono truncate">{{ $item->barcode }}</p>
+                                                @endif
+                                            </div>
+                                            
+                                            <!-- Stock Info -->
+                                            <div class="text-right">
+                                                <div class="text-sm {{ $item->isLowStock() ? 'text-red-600 font-semibold' : 'text-gray-900' }}">
+                                                    {{ $item->available_quantity }}/{{ $item->total_quantity }}
+                                                </div>
+                                                @if($item->isLowStock())
+                                                    <p class="text-xs text-red-600 font-medium">Low Stock!</p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Category and Condition -->
+                                        <div class="mt-2 flex items-center space-x-2">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium text-white"
+                                                  style="background-color: {{ $item->category->color }}">
+                                                {{ $item->category->name }}
+                                            </span>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $item->condition_color }}">
+                                                {{ ucfirst($item->condition) }}
+                                            </span>
+                                        </div>
+                                        
+                                        <!-- Location -->
+                                        @if($item->location)
+                                            <p class="mt-1 text-xs text-gray-500">📍 {{ $item->location }}</p>
+                                        @endif
+                                        
+                                        <!-- Actions -->
+                                        <div class="mt-3 flex items-center space-x-3">
+                                            <a href="{{ route('inventory.show', $item) }}" 
+                                               class="text-blue-600 hover:text-blue-900 font-medium text-xs">View</a>
+                                            
+                                            @if(Auth::user()->canManageStaff())
+                                                @if($item->available_quantity > 0)
+                                                    <a href="{{ route('inventory.assignments.create', ['item_id' => $item->id]) }}" 
+                                                       class="text-green-600 hover:text-green-900 font-medium text-xs">Check Out</a>
+                                                @endif
+                                                
+                                                <a href="{{ route('inventory.edit', $item) }}" 
+                                                   class="text-yellow-600 hover:text-yellow-900 font-medium text-xs">Edit</a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="p-6 text-center">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                </svg>
+                                <h3 class="mt-2 text-sm font-medium text-gray-900">No inventory found</h3>
+                                <p class="mt-1 text-sm text-gray-500">
+                                    @if(request()->hasAny(['search', 'category', 'condition', 'location']))
+                                        Try adjusting your search criteria.
+                                    @else
+                                        Get started by adding your first inventory item.
+                                    @endif
+                                </p>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+
+                <!-- Desktop Table View (sm and above) -->
+                <div class="hidden sm:block overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Assignment
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Staff Member
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Item
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Quantity
+                                <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Category
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Dates
+                                <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Stock
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Status
+                                <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Condition
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Location
+                                </th>
+                                <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Actions
                                 </th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse($assignments as $assignment)
-                                <tr class="hover:bg-gray-50 {{ $assignment->isOverdue() ? 'bg-red-50' : '' }}">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">#{{ $assignment->id }}</div>
-                                        <div class="text-sm text-gray-500">{{ $assignment->created_at->format('M j, Y') }}</div>
-                                    </td>
-                                    
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                            @forelse($items as $item)
+                                <tr class="hover:bg-gray-50 {{ $item->isLowStock() ? 'bg-red-50' : '' }}">
+                                    <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-10 w-10">
-                                                <div class="h-10 w-10 rounded-full {{ $assignment->staff->isMilitary() ? 'bg-gradient-to-r from-green-600 to-green-800' : 'bg-gradient-to-r from-blue-500 to-purple-600' }} flex items-center justify-center">
-                                                    <span class="text-white font-medium text-sm">
-                                                        {{ $assignment->staff->initials }}
-                                                    </span>
+                                            <div class="flex-shrink-0 h-8 w-8 lg:h-10 lg:w-10">
+                                                <div class="h-8 w-8 lg:h-10 lg:w-10 rounded-lg flex items-center justify-center text-white font-bold text-xs lg:text-sm"
+                                                     style="background-color: {{ $item->category->color }}">
+                                                    {{ $item->category->code }}
                                                 </div>
                                             </div>
-                                            <div class="ml-4">
-                                                <div class="text-sm font-medium text-gray-900">{{ $assignment->staff->name }}</div>
-                                                <div class="text-sm text-gray-500">{{ $assignment->staff->service_number }}</div>
-                                                @if($assignment->staff->department)
-                                                    <div class="text-xs text-gray-400">{{ $assignment->staff->department }}</div>
+                                            <div class="ml-3 lg:ml-4">
+                                                <div class="text-sm font-medium text-gray-900">{{ $item->name }}</div>
+                                                <div class="text-sm text-gray-500">{{ $item->item_code }}</div>
+                                                @if($item->barcode)
+                                                    <div class="text-xs text-gray-400 font-mono">{{ $item->barcode }}</div>
                                                 @endif
                                             </div>
                                         </div>
                                     </td>
-
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-8 w-8">
-                                                <div class="h-8 w-8 rounded-lg flex items-center justify-center text-white font-bold text-xs"
-                                                     style="background-color: {{ $assignment->item->category->color }}">
-                                                    {{ $assignment->item->category->code }}
-                                                </div>
-                                            </div>
-                                            <div class="ml-3">
-                                                <div class="text-sm font-medium text-gray-900">{{ $assignment->item->name }}</div>
-                                                <div class="text-sm text-gray-500">{{ $assignment->item->item_code }}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {{ $assignment->quantity }}
-                                    </td>
-
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        <div>
-                                            <div class="font-medium">Assigned: {{ $assignment->assigned_date->format('M j, Y') }}</div>
-                                            @if($assignment->expected_return_date)
-                                                <div class="{{ $assignment->isOverdue() ? 'text-red-600 font-medium' : 'text-gray-500' }}">
-                                                    Due: {{ $assignment->expected_return_date->format('M j, Y') }}
-                                                    @if($assignment->isOverdue())
-                                                        <span class="text-xs">({{ $assignment->expected_return_date->diffForHumans() }})</span>
-                                                    @endif
-                                                </div>
-                                            @endif
-                                            @if($assignment->actual_return_date)
-                                                <div class="text-green-600">
-                                                    Returned: {{ $assignment->actual_return_date->format('M j, Y') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </td>
-
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $assignment->status_color }}">
-                                            {{ ucfirst($assignment->status) }}
-                                            @if($assignment->isOverdue())
-                                                <svg class="ml-1 w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                                                </svg>
-                                            @endif
+                                    <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white"
+                                              style="background-color: {{ $item->category->color }}">
+                                            {{ $item->category->name }}
                                         </span>
                                     </td>
-
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                        <a href="{{ route('inventory.assignments.show', $assignment) }}" 
-                                           class="text-blue-600 hover:text-blue-900">View</a>
-                                        
-                                        @if(Auth::user()->canManageStaff() && $assignment->status === 'active')
-                                            <a href="{{ route('inventory.assignments.return', $assignment) }}" 
-                                               class="text-green-600 hover:text-green-900">Return</a>
+                                    <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">
+                                            <span class="{{ $item->isLowStock() ? 'text-red-600 font-semibold' : '' }}">
+                                                {{ $item->available_quantity }}
+                                            </span>
+                                            / {{ $item->total_quantity }}
+                                        </div>
+                                        <div class="text-xs text-gray-500">
+                                            {{ $item->assigned_quantity }} assigned
+                                        </div>
+                                        @if($item->isLowStock())
+                                            <div class="text-xs text-red-600 font-medium">Low Stock!</div>
                                         @endif
+                                    </td>
+                                    <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $item->condition_color }}">
+                                            {{ ucfirst($item->condition) }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $item->location ?: 'Not specified' }}
+                                    </td>
+                                    <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div class="flex flex-col lg:flex-row lg:items-center space-y-1 lg:space-y-0 lg:space-x-2">
+                                            <a href="{{ route('inventory.show', $item) }}" 
+                                               class="text-blue-600 hover:text-blue-900">View</a>
+                                            
+                                            @if(Auth::user()->canManageStaff())
+                                                @if($item->available_quantity > 0)
+                                                    <a href="{{ route('inventory.assignments.create', ['item_id' => $item->id]) }}" 
+                                                       class="text-green-600 hover:text-green-900">Check Out</a>
+                                                @endif
+                                                
+                                                <a href="{{ route('inventory.edit', $item) }}" 
+                                                   class="text-yellow-600 hover:text-yellow-900">Edit</a>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="px-6 py-12 text-center">
+                                    <td colspan="6" class="px-4 lg:px-6 py-12 text-center">
                                         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                                         </svg>
-                                        <h3 class="mt-2 text-sm font-medium text-gray-900">No assignments found</h3>
+                                        <h3 class="mt-2 text-sm font-medium text-gray-900">No inventory found</h3>
                                         <p class="mt-1 text-sm text-gray-500">
-                                            @if(request()->hasAny(['search', 'status', 'staff_id']))
+                                            @if(request()->hasAny(['search', 'category', 'condition', 'location']))
                                                 Try adjusting your search criteria.
                                             @else
-                                                Get started by checking out an inventory item to a staff member.
+                                                Get started by adding your first inventory item.
                                             @endif
                                         </p>
-                                        @if(Auth::user()->canManageStaff() && !request()->hasAny(['search', 'status', 'staff_id']))
+                                        @if(Auth::user()->canManageStaff() && !request()->hasAny(['search', 'category', 'condition', 'location']))
                                             <div class="mt-6">
-                                                <a href="{{ route('inventory.assignments.create') }}" 
-                                                   class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
-                                                    Check Out Item
+                                                <a href="{{ route('inventory.create') }}" 
+                                                   class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                                                    Add Inventory Item
                                                 </a>
                                             </div>
                                         @endif
@@ -295,77 +468,95 @@
                 </div>
 
                 <!-- Pagination -->
-                @if($assignments->hasPages())
-                    <div class="px-6 py-4 border-t border-gray-200">
-                        {{ $assignments->links() }}
+                @if($items->hasPages())
+                    <div class="px-4 sm:px-6 py-4 border-t border-gray-200">
+                        {{ $items->links() }}
                     </div>
                 @endif
             </div>
 
-            <!-- Quick Actions -->
-            @if(Auth::user()->canManageStaff())
-                <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <a href="{{ route('inventory.assignments.create') }}" 
-                       class="group relative bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-green-500 rounded-lg shadow hover:shadow-md transition-shadow">
-                        <div>
-                            <span class="rounded-lg inline-flex p-3 bg-green-50 text-green-700 ring-4 ring-white">
-                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                                </svg>
-                            </span>
-                        </div>
-                        <div class="mt-8">
-                            <h3 class="text-lg font-medium">
-                                <span class="absolute inset-0" aria-hidden="true"></span>
-                                New Assignment
-                            </h3>
-                            <p class="mt-2 text-sm text-gray-500">
-                                Check out an inventory item to a staff member
-                            </p>
-                        </div>
-                    </a>
+            <!-- Quick Navigation - Responsive Grid -->
+            <div class="mt-6 lg:mt-8 grid grid-cols-2 md:grid-cols-4 gap-3 lg:gap-4">
+                <a href="{{ route('inventory.assignments.index') }}" 
+                   class="group relative bg-white p-4 lg:p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow hover:shadow-md transition-shadow">
+                    <div>
+                        <span class="rounded-lg inline-flex p-2 lg:p-3 bg-blue-50 text-blue-700 ring-4 ring-white">
+                            <svg class="h-4 w-4 lg:h-6 lg:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="mt-4 lg:mt-8">
+                        <h3 class="text-sm lg:text-lg font-medium">
+                            <span class="absolute inset-0" aria-hidden="true"></span>
+                            Assignments
+                        </h3>
+                        <p class="mt-1 lg:mt-2 text-xs lg:text-sm text-gray-500">
+                            View & manage assignments
+                        </p>
+                    </div>
+                </a>
 
-                    <a href="{{ route('inventory.assignments.overdue') }}" 
-                       class="group relative bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-red-500 rounded-lg shadow hover:shadow-md transition-shadow">
-                        <div>
-                            <span class="rounded-lg inline-flex p-3 {{ $stats['total_overdue'] > 0 ? 'bg-red-50 text-red-700' : 'bg-gray-50 text-gray-700' }} ring-4 ring-white">
-                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </span>
-                        </div>
-                        <div class="mt-8">
-                            <h3 class="text-lg font-medium">
-                                <span class="absolute inset-0" aria-hidden="true"></span>
-                                Overdue Returns
-                            </h3>
-                            <p class="mt-2 text-sm text-gray-500">
-                                {{ $stats['total_overdue'] }} assignments are overdue
-                            </p>
-                        </div>
-                    </a>
+                <a href="{{ route('inventory.categories.index') }}" 
+                   class="group relative bg-white p-4 lg:p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow hover:shadow-md transition-shadow">
+                    <div>
+                        <span class="rounded-lg inline-flex p-2 lg:p-3 bg-green-50 text-green-700 ring-4 ring-white">
+                            <svg class="h-4 w-4 lg:h-6 lg:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="mt-4 lg:mt-8">
+                        <h3 class="text-sm lg:text-lg font-medium">
+                            <span class="absolute inset-0" aria-hidden="true"></span>
+                            Categories
+                        </h3>
+                        <p class="mt-1 lg:mt-2 text-xs lg:text-sm text-gray-500">
+                            Manage categories
+                        </p>
+                    </div>
+                </a>
 
-                    <a href="{{ route('inventory.index') }}" 
-                       class="group relative bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow hover:shadow-md transition-shadow">
-                        <div>
-                            <span class="rounded-lg inline-flex p-3 bg-blue-50 text-blue-700 ring-4 ring-white">
-                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                                </svg>
-                            </span>
-                        </div>
-                        <div class="mt-8">
-                            <h3 class="text-lg font-medium">
-                                <span class="absolute inset-0" aria-hidden="true"></span>
-                                View Inventory
-                            </h3>
-                            <p class="mt-2 text-sm text-gray-500">
-                                Browse and manage inventory items
-                            </p>
-                        </div>
-                    </a>
-                </div>
-            @endif
+                <a href="{{ route('inventory.low-stock') }}" 
+                   class="group relative bg-white p-4 lg:p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow hover:shadow-md transition-shadow">
+                    <div>
+                        <span class="rounded-lg inline-flex p-2 lg:p-3 {{ $stats['low_stock_count'] > 0 ? 'bg-red-50 text-red-700' : 'bg-gray-50 text-gray-700' }} ring-4 ring-white">
+                            <svg class="h-4 w-4 lg:h-6 lg:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="mt-4 lg:mt-8">
+                        <h3 class="text-sm lg:text-lg font-medium">
+                            <span class="absolute inset-0" aria-hidden="true"></span>
+                            Low Stock
+                        </h3>
+                        <p class="mt-1 lg:mt-2 text-xs lg:text-sm text-gray-500">
+                            {{ $stats['low_stock_count'] }} items need restocking
+                        </p>
+                    </div>
+                </a>
+
+                <a href="{{ route('inventory.assignments.overdue') }}" 
+                   class="group relative bg-white p-4 lg:p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow hover:shadow-md transition-shadow">
+                    <div>
+                        <span class="rounded-lg inline-flex p-2 lg:p-3 {{ $stats['overdue_assignments'] > 0 ? 'bg-red-50 text-red-700' : 'bg-gray-50 text-gray-700' }} ring-4 ring-white">
+                            <svg class="h-4 w-4 lg:h-6 lg:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="mt-4 lg:mt-8">
+                        <h3 class="text-sm lg:text-lg font-medium">
+                            <span class="absolute inset-0" aria-hidden="true"></span>
+                            Overdue Returns
+                        </h3>
+                        <p class="mt-1 lg:mt-2 text-xs lg:text-sm text-gray-500">
+                            {{ $stats['overdue_assignments'] }} items overdue
+                        </p>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
 @endsection

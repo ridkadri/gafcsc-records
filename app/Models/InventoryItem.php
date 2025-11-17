@@ -29,8 +29,6 @@ class InventoryItem extends Model
         'location',
         'purchase_date',
         'warranty_expiry',
-        'last_inspection',
-        'next_inspection',
         'specifications',
         'notes',
         'status',
@@ -40,8 +38,6 @@ class InventoryItem extends Model
         'unit_cost' => 'decimal:2',
         'purchase_date' => 'date',
         'warranty_expiry' => 'date',
-        'last_inspection' => 'date',
-        'next_inspection' => 'date',
         'specifications' => 'array',
     ];
 
@@ -96,19 +92,20 @@ class InventoryItem extends Model
     }
 
     /**
-     * Check if item needs inspection.
-     */
-    public function needsInspection()
-    {
-        return $this->next_inspection && $this->next_inspection->isPast();
-    }
-
-    /**
      * Check if warranty is expired.
      */
     public function isWarrantyExpired()
     {
         return $this->warranty_expiry && $this->warranty_expiry->isPast();
+    }
+
+    /**
+     * Check if item needs inspection.
+     * Returns true if warranty expires within 30 days or already expired.
+     */
+    public function needsInspection()
+    {
+        return $this->warranty_expiry && $this->warranty_expiry->lte(now()->addDays(30));
     }
 
     /**
@@ -151,10 +148,15 @@ class InventoryItem extends Model
 
     /**
      * Scope for items needing inspection.
+     * Returns items that need inspection based on warranty expiry or maintenance schedule.
      */
     public function scopeNeedsInspection($query)
     {
-        return $query->where('next_inspection', '<=', now());
+        // Items with warranty expiring within 30 days or already expired
+        return $query->where(function($q) {
+            $q->whereNotNull('warranty_expiry')
+              ->where('warranty_expiry', '<=', now()->addDays(30));
+        });
     }
 
     /**
@@ -170,4 +172,3 @@ class InventoryItem extends Model
                     ->orWhere('model', 'like', "%{$search}%");
     }
 }
-

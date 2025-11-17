@@ -12,17 +12,29 @@ class UserManagementController extends Controller
     public function index()
     {
         $users = User::orderBy('role')->orderBy('name')->get();
-        return view('users.index', compact('users'));
+        
+        // Group users by role for better display
+        $groupedUsers = [
+            'super_admin' => $users->where('role', User::ROLE_SUPER_ADMIN),
+            'military_admin' => $users->where('role', User::ROLE_MILITARY_ADMIN)->merge($users->where('role', 'admin')),
+            'chief_clerk' => $users->where('role', User::ROLE_CHIEF_CLERK),
+            'capo' => $users->where('role', User::ROLE_CAPO),
+            'peo' => $users->where('role', User::ROLE_PEO),
+            'viewer' => $users->where('role', User::ROLE_VIEWER),
+        ];
+        
+        return view('users.index', compact('users', 'groupedUsers'));
     }
 
     public function create()
     {
-        return view('users.create');
+        $availableRoles = $this->getAvailableRolesForSelect();
+        return view('users.create', compact('availableRoles'));
     }
 
     public function store(Request $request)
     {
-        $availableRoles = $this->getAvailableRoles();
+        $availableRoles = array_keys($this->getAvailableRolesForSelect());
         
         $request->validate([
             'name' => 'required|string|max:255',
@@ -54,7 +66,9 @@ class UserManagementController extends Controller
             return redirect()->route('users.index')
                 ->with('error', 'You do not have permission to edit this user.');
         }
-        return view('users.edit', compact('user'));
+        
+        $availableRoles = $this->getAvailableRolesForSelect();
+        return view('users.edit', compact('user', 'availableRoles'));
     }
 
     public function update(Request $request, User $user)
@@ -64,7 +78,7 @@ class UserManagementController extends Controller
                 ->with('error', 'You do not have permission to edit this user.');
         }
 
-        $availableRoles = $this->getAvailableRoles();
+        $availableRoles = array_keys($this->getAvailableRolesForSelect());
         $request->validate([
             'role' => ['required', Rule::in($availableRoles)],
         ]);
@@ -79,10 +93,12 @@ class UserManagementController extends Controller
                 ->with('error', 'Only Super Administrators can assign Super Administrator roles.');
         }
 
+        $oldRole = $user->getRoleDisplayName();
         $user->update(['role' => $request->role]);
+        $newRole = $user->getRoleDisplayName();
 
         return redirect()->route('users.index')
-            ->with('success', "User {$user->name}'s role updated to {$user->getRoleDisplayName()}.");
+            ->with('success', "User {$user->name}'s role updated from {$oldRole} to {$newRole}.");
     }
 
     public function destroy(User $user)
@@ -115,44 +131,47 @@ class UserManagementController extends Controller
                 ->with('error', 'You do not have permission to reset this user\'s password.');
         }
 
-        $request->validate([
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+        // Reset to default password
+    $user->resetToDefaultPassword();
 
-        $user->update(['password' => Hash::make($request->password)]);
+    return redirect()->route('users.index')
+        ->with('success', "Password reset successfully for {$user->name}. Default password (gafcsc@123) has been set and user will be required to change it on next login.");
+    }
+
+    // Add a new method for quick reset (without form)
+    public function quickResetPassword(User $user)
+    {
+        if (!auth()->user()->canResetPassword($user)) {
+            return redirect()->route('users.index')
+                ->with('error', 'You do not have permission to reset this user\'s password.');
+        }
+
+        // Reset to default password
+        $user->resetToDefaultPassword();
 
         return redirect()->route('users.index')
-            ->with('success', "Password reset successfully for {$user->name}.");
-    }
+            ->with('success', "Password reset successfully for {$user->name}. Default password (gafcsc@123) has been set.");
 
-    // Initial setup methods
-    public function makeAdmin()
-    {
-        auth()->user()->update(['role' => User::ROLE_ADMIN]);
-        return redirect()->route('dashboard')->with('success', 'You are now an administrator!');
-    }
+    $request->validate([
+        'password' => 'required|string|min:8|confirmed',
+    ]);
 
-    public function makeSuperAdmin()
-    {
-        if (User::where('role', User::ROLE_SUPER_ADMIN)->exists()) {
-            return redirect()->route('dashboard')->with('error', 'A Super Administrator already exists.');
-        }
-        
-        auth()->user()->update(['role' => User::ROLE_SUPER_ADMIN]);
-        return redirect()->route('dashboard')->with('success', 'You are now the Super Administrator!');
+    $user->update(['password' => Hash::make($request->password)]);
+
+    return redirect()->route('users.index')
+        ->with('success', "Password reset successfully for {$user->name}.");
     }
 
     // Helper methods
-    private function getAvailableRoles(): array
+    private function getAvailableRolesForSelect(): array
     {
         $currentUser = auth()->user();
         
         if ($currentUser->isSuperAdmin()) {
-            return [User::ROLE_ADMIN, User::ROLE_VIEWER, User::ROLE_SUPER_ADMIN];
-        } elseif ($currentUser->isAdmin()) {
-            return [User::ROLE_ADMIN, User::ROLE_VIEWER];
+            return User::getAllRoles();
         }
         
-        return [User::ROLE_VIEWER];
+        // Non-super admins can't assign roles
+        return [];
     }
 }

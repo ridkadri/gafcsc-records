@@ -1,129 +1,221 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Edit User Role') }}
-        </h2>
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Edit User Role') }}
+            </h2>
+            <a href="{{ route('users.index') }}" class="text-sm text-blue-600 hover:text-blue-800">
+                ← Back to Users
+            </a>
+        </div>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <div class="mb-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-2">
-                            Change Role for {{ $user->name }}
-                        </h3>
-                        <p class="text-sm text-gray-600">
-                            Update the user's access level in the system.
-                        </p>
+                <div class="p-6">
+                    <!-- User Info Card -->
+                    <div class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <div class="flex items-center">
+                            <div class="h-12 w-12 bg-blue-500 rounded-full flex items-center justify-center text-white text-lg font-bold">
+                                {{ substr($user->name, 0, 1) }}
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-semibold text-gray-900">{{ $user->name }}</h3>
+                                <p class="text-sm text-gray-600">{{ $user->email ?? 'No email' }}</p>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    Current Role: <span class="font-medium text-blue-600">{{ $user->getRoleDisplayName() }}</span>
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
+                    <!-- Change Role Form -->
                     <form method="POST" action="{{ route('users.update', $user) }}">
                         @csrf
                         @method('PUT')
-
-                        <!-- User Info -->
-                        <div class="mb-6 p-4 bg-gray-50 rounded-lg">
-                            <div class="flex items-center space-x-4">
-                                <div class="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                                    <span class="text-white font-medium">
-                                        {{ strtoupper(substr($user->name, 0, 1)) }}
-                                    </span>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-medium text-gray-900">{{ $user->name }}</div>
-                                    <div class="text-sm text-gray-500">{{ $user->email }}</div>
-                                    <div class="text-xs text-gray-400">
-                                        Member since {{ $user->created_at->format('M d, Y') }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Current Role -->
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Current Role
-                            </label>
-                            <div class="p-3 bg-gray-100 rounded-md">
-                                @if($user->role === 'admin')
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                        </svg>
-                                        Administrator
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-                                        </svg>
-                                        Viewer
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <!-- New Role Selection -->
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                New Role
-                            </label>
-                            <div class="space-y-3">
-                                <label class="flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-                                    <input type="radio" name="role" value="admin" 
-                                           {{ $user->role === 'admin' ? 'checked' : '' }}
-                                           class="mt-1 h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300">
-                                    <div class="flex-1">
-                                        <div class="flex items-center">
-                                            <span class="text-sm font-medium text-gray-900">Administrator</span>
-                                            <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
-                                                Full Access
-                                            </span>
-                                        </div>
-                                        <p class="text-sm text-gray-500 mt-1">
-                                            Can view, create, edit, and delete staff members. Can manage user roles.
-                                        </p>
-                                    </div>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-3">
+                                    Select New Role
                                 </label>
 
-                                <label class="flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-                                    <input type="radio" name="role" value="viewer" 
-                                           {{ $user->role === 'viewer' ? 'checked' : '' }}
-                                           class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
-                                    <div class="flex-1">
-                                        <div class="flex items-center">
-                                            <span class="text-sm font-medium text-gray-900">Viewer</span>
-                                            <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                                                Read Only
+                                <div class="space-y-3">
+                                    @foreach($availableRoles as $roleValue => $roleLabel)
+                                        @if($roleValue === 'head_of_department')
+                                            <!-- Special styling for HOD role -->
+                                            <label class="relative flex items-start p-4 border-2 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors {{ $user->role === $roleValue ? 'border-blue-500 bg-blue-50' : 'border-blue-200' }}">
+                                        @else
+                                            <label class="relative flex items-start p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors {{ $user->role === $roleValue ? 'border-blue-500 bg-blue-50' : 'border-gray-300' }}">
+                                        @endif
+                                        <div class="flex items-center h-5">
+                                            <input 
+                                                type="radio" 
+                                                name="role" 
+                                                value="{{ $roleValue }}"
+                                                {{ $user->role === $roleValue ? 'checked' : '' }}
+                                                class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                                required
+                                            >
+                                        </div>
+                                        <div class="ml-3 flex-1">
+                                            <span class="block text-sm font-medium text-gray-900">
+                                                {{ $roleLabel }}
+                                                @if($roleValue === 'head_of_department')
+                                                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                                    HOD
+                                                    </span>
+                                                @endif
+                                            </span>
+                                            <span class="block text-xs text-gray-500 mt-1">
+                                                @switch($roleValue)
+                                                    @case('super_admin')
+                                                        Full system access. Can manage all users and assign roles.
+                                                        @break
+                                                    @case('admin')
+                                                        Full system access except Super Admin management.
+                                                        @break
+                                                    @case('head_of_department')
+                                                        Can view and manage staff in their department. Sees subordinates on dashboard.
+                                                        @break
+                                                    @case('military_admin')
+                                                        Can view all staff (military + civilian) and inventory.
+                                                        @break
+                                                    <!-- ... other roles ... -->
+                                                @endswitch
                                             </span>
                                         </div>
-                                        <p class="text-sm text-gray-500 mt-1">
-                                            Can only view staff member information. Cannot create, edit, or delete.
-                                        </p>
-                                    </div>
-                                </label>
-                            </div>
-                            @error('role')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
+                                        </label>
+                                    @endforeach
+                                </div>
 
-                        <!-- Action Buttons -->
-                        <div class="flex items-center justify-between pt-6 border-t border-gray-200">
-                            <a href="{{ route('users.index') }}" 
-                               class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                Cancel
-                            </a>
-                            <button type="submit" 
-                                    class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                Update Role
-                            </button>
+                                @error('role')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Permission Summary for Selected Role -->
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <h4 class="text-sm font-medium text-blue-900 mb-2">📋 Permission Summary</h4>
+                                <div id="permission-summary" class="text-xs text-blue-800 space-y-1">
+                                    <!-- Will be updated via JavaScript based on selected role -->
+                                </div>
+                            </div>
+
+                            <!-- Warning for Role Change -->
+                            @if($user->role !== 'viewer')
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                    <div class="flex">
+                                        <div class="flex-shrink-0">
+                                            <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-sm text-yellow-800">
+                                                <strong>Warning:</strong> Changing this user's role will immediately affect their access permissions. Make sure you understand the implications before proceeding.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- Form Actions -->
+                            <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+                                <a href="{{ route('users.index') }}" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    Cancel
+                                </a>
+                                <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    Update Role
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        // Update permission summary based on selected role
+        const permissionDescriptions = {
+            'super_admin': [
+                '✅ Full access to all pages',
+                '✅ Manage users and assign roles',
+                '✅ View and edit all staff',
+                '✅ Manage inventory',
+                '✅ Delete any records'
+            ],
+            'admin': [
+            '✅ Full access to all pages',
+            '✅ Manage users and assign roles (except Super Admins)',
+            '✅ View and edit all staff',
+            '✅ Manage inventory',
+            '✅ Delete any records (except Super Admins)'
+        ],
+            'head_of_department': [
+            '✅ View and manage staff in their department',
+            '✅ See subordinates on dashboard',
+            '✅ Department-specific statistics',
+            '❌ Cannot manage users',
+            '❌ Cannot access other departments',
+            '❌ Limited to assigned department only'
+        ],
+            'military_admin': [
+                '✅ View all staff (military + civilian)',
+                '✅ View inventory',
+                '❌ Cannot manage users',
+                '❌ Cannot add/edit staff',
+                '❌ Cannot manage inventory'
+            ],
+            'chief_clerk': [
+                '✅ View military staff',
+                '✅ Add new military staff',
+                '✅ Edit military staff',
+                '❌ Cannot view civilian staff',
+                '❌ Cannot view inventory',
+                '❌ Cannot manage users'
+            ],
+            'capo': [
+                '✅ View civilian staff',
+                '✅ Edit civilian staff',
+                '❌ Cannot view military staff',
+                '❌ Cannot view inventory',
+                '❌ Cannot manage users'
+            ],
+            'peo': [
+                '✅ View civilian staff',
+                '✅ Add new civilian staff',
+                '❌ Cannot edit existing civilians',
+                '❌ Cannot view military staff',
+                '❌ Cannot view inventory',
+                '❌ Cannot manage users'
+            ],
+            'viewer': [
+                '✅ View own profile only',
+                '❌ Cannot view other staff',
+                '❌ Cannot add/edit any records',
+                '❌ Cannot access inventory',
+                '❌ Cannot manage users'
+            ]
+        };
+
+        document.querySelectorAll('input[name="role"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const summary = document.getElementById('permission-summary');
+                const permissions = permissionDescriptions[this.value] || [];
+                summary.innerHTML = permissions.join('<br>');
+            });
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkedRadio = document.querySelector('input[name="role"]:checked');
+            if (checkedRadio) {
+                const summary = document.getElementById('permission-summary');
+                const permissions = permissionDescriptions[checkedRadio.value] || [];
+                summary.innerHTML = permissions.join('<br>');
+            }
+        });
+    </script>
 </x-app-layout>

@@ -2,11 +2,11 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Staff Directory Export</title>
+    <title>GAFCSC Staff Directory Export</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-family: serif;
+            font-size: 10pt;
             margin: 0;
             padding: 20px;
         }
@@ -54,6 +54,16 @@
             margin-top: 5px;
         }
         
+        .section-title {
+            background-color: #374151;
+            color: white;
+            padding: 10px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
         table {
             width: 100%;
             border-collapse: collapse;
@@ -80,10 +90,6 @@
             background-color: #f9fafb;
         }
         
-        tr:hover {
-            background-color: #f3f4f6;
-        }
-        
         .rank-badge {
             background-color: #dbeafe;
             color: #1e40af;
@@ -93,12 +99,13 @@
             font-weight: 500;
         }
         
-        .office-tag {
-            background-color: #f3f4f6;
-            color: #374151;
-            padding: 2px 6px;
-            border-radius: 4px;
+        .grade-badge {
+            background-color: #ddd6fe;
+            color: #5b21b6;
+            padding: 3px 8px;
+            border-radius: 12px;
             font-size: 10px;
+            font-weight: 500;
         }
         
         .footer {
@@ -116,20 +123,28 @@
             color: #6b7280;
             font-style: italic;
         }
+        
+        .page-break {
+            page-break-after: always;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Staff Directory</h1>
+        <h1>Ghana Armed Forces Command & Staff College</h1>
+        <h2 style="margin: 10px 0; font-size: 16px;">Staff Directory</h2>
         <div class="meta">
             Generated on {{ now()->format('F j, Y \a\t g:i A') }}
-            @if(request('search') || request('office'))
+            @if(request('search') || request('type') || request('department'))
                 <br>
                 @if(request('search'))
                     Search: "{{ request('search') }}"
                 @endif
-                @if(request('office'))
-                    | Office: {{ request('office') }}
+                @if(request('type'))
+                    | Type: {{ ucfirst(request('type')) }}
+                @endif
+                @if(request('department'))
+                    | Department: {{ request('department') }}
                 @endif
             @endif
         </div>
@@ -137,59 +152,115 @@
 
     <div class="stats">
         <div class="stat-item">
-            <div class="stat-number">{{ $staff->count() }}</div>
+            <div class="stat-number">{{ $stats['total_staff'] }}</div>
             <div class="stat-label">Total Staff</div>
         </div>
         <div class="stat-item">
-            <div class="stat-number">{{ $staff->pluck('office')->unique()->count() }}</div>
-            <div class="stat-label">Office Locations</div>
+            <div class="stat-number">{{ $stats['military_count'] }}</div>
+            <div class="stat-label">Military Personnel</div>
         </div>
         <div class="stat-item">
-            <div class="stat-number">{{ $staff->whereNotNull('rank')->where('rank', '!=', '')->count() }}</div>
-            <div class="stat-label">With Ranks</div>
+            <div class="stat-number">{{ $stats['civilian_count'] }}</div>
+            <div class="stat-label">Civilian Personnel</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">{{ $stats['total_departments'] }}</div>
+            <div class="stat-label">Departments</div>
         </div>
     </div>
 
-    @if($staff->count() > 0)
+    @if($militaryStaff->count() > 0)
+        <div class="section-title">🎖️ MILITARY PERSONNEL ({{ $militaryStaff->count() }})</div>
+        
         <table>
             <thead>
                 <tr>
-                    <th style="width: 15%">Staff ID</th>
-                    <th style="width: 30%">Full Name</th>
-                    <th style="width: 20%">Rank</th>
-                    <th style="width: 25%">Office</th>
-                    <th style="width: 10%">Date Added</th>
+                    <th style="width: 5%">No.</th>
+                    <th style="width: 12%">Service No.</th>
+                    <th style="width: 12%">Rank</th>
+                    <th style="width: 20%">Name</th>
+                    <th style="width: 6%">Sex</th>
+                    <th style="width: 10%">Trade</th>
+                    <th style="width: 10%">Arm of Svc</th>
+                    <th style="width: 10%">Deployment</th>
+                    <th style="width: 15%">Department</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($staff as $member)
+                @foreach($militaryStaff as $index => $member)
                     <tr>
-                        <td><strong>{{ $member->staff_id }}</strong></td>
-                        <td>{{ $member->name }}</td>
+                        <td>{{ $index + 1 }}</td>
+                        <td><strong>{{ $member->service_number }}</strong></td>
                         <td>
                             @if($member->rank)
                                 <span class="rank-badge">{{ $member->rank }}</span>
                             @else
-                                <span style="color: #9ca3af; font-style: italic;">Not Specified</span>
+                                <span style="color: #999; font-style: italic;">N/A</span>
                             @endif
                         </td>
-                        <td>
-                            <span class="office-tag">{{ $member->office }}</span>
-                        </td>
-                        <td>{{ $member->created_at->format('M j, Y') }}</td>
+                        <td>{{ $member->name }}</td>
+                        <td style="text-align: center;">{{ $member->sex ?: '-' }}</td>
+                        <td>{{ $member->trade ?: '-' }}</td>
+                        <td>{{ $member->arm_of_service ?: '-' }}</td>
+                        <td>{{ $member->deployment ?: '-' }}</td>
+                        <td>{{ $member->department ?: '-' }}</td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
-    @else
+    @endif
+
+    @if($civilianStaff->count() > 0)
+        @if($militaryStaff->count() > 0)
+            <div class="page-break"></div>
+        @endif
+        
+        <div class="section-title">👔 CIVILIAN PERSONNEL ({{ $civilianStaff->count() }})</div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 5%">No.</th>
+                    <th style="width: 15%">Service No.</th>
+                    <th style="width: 25%">Name</th>
+                    <th style="width: 15%">Present Grade</th>
+                    <th style="width: 15%">Job Description</th>
+                    <th style="width: 12%">Location</th>
+                    <th style="width: 13%">Department</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($civilianStaff as $index => $member)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td><strong>{{ $member->service_number }}</strong></td>
+                        <td>{{ $member->name }}</td>
+                        <td>
+                            @if($member->present_grade)
+                                <span class="grade-badge">{{ $member->present_grade }}</span>
+                            @else
+                                <span style="color: #999; font-style: italic;">N/A</span>
+                            @endif
+                        </td>
+                        <td>{{ $member->job_description ?: '-' }}</td>
+                        <td>{{ $member->location ?: '-' }}</td>
+                        <td>{{ $member->department ?: '-' }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+
+    @if($staff->count() == 0)
         <div class="no-data">
             <p>No staff members found matching the current filters.</p>
         </div>
     @endif
 
     <div class="footer">
-        <p>Staff Management System - Confidential Document</p>
-        <p>Page generated automatically from database records</p>
+        <p><strong>CONFIDENTIAL DOCUMENT</strong></p>
+        <p>Ghana Armed Forces Command & Staff College - Staff Management System</p>
+        <p>Total Records: {{ $staff->count() }} (Military: {{ $militaryStaff->count() }}, Civilian: {{ $civilianStaff->count() }}) | Generated: {{ now()->format('Y-m-d H:i:s') }}</p>
     </div>
 </body>
 </html>

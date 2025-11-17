@@ -61,7 +61,6 @@ class InventoryController extends Controller
             'low_stock_count' => InventoryItem::active()->lowStock()->count(),
             'active_assignments' => InventoryAssignment::active()->count(),
             'overdue_assignments' => InventoryAssignment::overdue()->count(),
-            'needs_inspection' => InventoryItem::active()->needsInspection()->count(),
         ];
         
         return view('inventory.index', compact('items', 'categories', 'locations', 'stats'));
@@ -103,7 +102,6 @@ class InventoryController extends Controller
             'location' => 'nullable|string|max:255',
             'purchase_date' => 'nullable|date',
             'warranty_expiry' => 'nullable|date|after:purchase_date',
-            'next_inspection' => 'nullable|date',
             'specifications' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);
@@ -184,7 +182,6 @@ class InventoryController extends Controller
             'location' => 'nullable|string|max:255',
             'purchase_date' => 'nullable|date',
             'warranty_expiry' => 'nullable|date|after:purchase_date',
-            'next_inspection' => 'nullable|date',
             'specifications' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);
@@ -335,7 +332,6 @@ class InventoryController extends Controller
             'low_stock_items' => InventoryItem::active()->lowStock()->count(),
             'active_assignments' => InventoryAssignment::active()->count(),
             'overdue_assignments' => InventoryAssignment::overdue()->count(),
-            'items_needing_inspection' => InventoryItem::active()->needsInspection()->count(),
             'category_breakdown' => InventoryItem::active()
                                                   ->join('inventory_categories', 'inventory_items.category_id', '=', 'inventory_categories.id')
                                                   ->selectRaw('inventory_categories.name, COUNT(*) as count')
