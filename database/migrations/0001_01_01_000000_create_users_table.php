@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['admin', 'viewer'])->default('viewer')->after('email');
+            $table->enum('role', ['admin', 'viewer'])->default('viewer');
             $table->rememberToken();
             $table->timestamps();
         });
@@ -40,7 +40,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             // Only add if column doesn't exist
             if (!Schema::hasColumn('users', 'role')) {
-                $table->enum('role', ['admin', 'viewer'])->default('viewer')->after('email');
+                $table->enum('role', ['admin', 'viewer'])->default('viewer');
             }
         });
     }

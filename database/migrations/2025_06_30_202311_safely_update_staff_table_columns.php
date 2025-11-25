@@ -16,12 +16,17 @@ return new class extends Migration
         Schema::table('staff', function (Blueprint $table) {
             // Add service_number if it doesn't exist
             if (!Schema::hasColumn('staff', 'service_number')) {
-                $table->string('service_number')->nullable()->after('name');
+                $table->string('service_number')->nullable();
             }
-            
+            // Add appointment if it doesn't exist
+	    if (!Schema::hasColumn('staff', 'appointment')) {
+    		$table->string('appointment')->nullable();
+	    }
+
+
             // Add department if it doesn't exist  
             if (!Schema::hasColumn('staff', 'department')) {
-                $table->string('department')->nullable()->after('appointment');
+                $table->string('department')->nullable();
             }
         });
 
@@ -67,6 +72,9 @@ return new class extends Migration
             if (Schema::hasColumn('staff', 'department')) {
                 $table->dropColumn('department');
             }
+		if (Schema::hasColumn('staff', 'appointment')) {
+    		$table->dropColumn('appointment');
+	    }
         });
     }
 };

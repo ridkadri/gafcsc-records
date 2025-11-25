@@ -11,8 +11,8 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // First add as nullable
-            $table->string('username')->nullable()->after('email');
-            $table->timestamp('password_changed_at')->nullable()->after('password');
+            $table->string('username')->nullable();
+            $table->timestamp('password_changed_at')->nullable();
         });
 
         // Set default usernames and passwords for existing users

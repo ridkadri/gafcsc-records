@@ -705,6 +705,15 @@ class Staff extends Model
     {
         parent::boot();
         
+	// Auto-generate staff_id when creating new staff
+	static::creating(function ($staff) {
+    	   if (empty($staff->staff_id)) {
+        	// Generate unique staff_id
+        	$lastStaff = Staff::orderBy('id', 'desc')->first();
+        	$nextNumber = $lastStaff ? $lastStaff->id + 1 : 1;
+        	$staff->staff_id = 'STF' . str_pad($nextNumber, 6, '0', STR_PAD_LEFT);
+    	}
+	});
         // Auto-sync HOD relationships when department or is_hod changes
         static::saved(function ($staff) {
             // If staff becomes HOD, assign all department staff to them

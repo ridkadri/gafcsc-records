@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // Add service_number column for unified login
-            $table->string('service_number')->nullable()->after('name');
+            $table->string('service_number')->nullable();
             
             // Add index for faster lookups
             $table->index('service_number');

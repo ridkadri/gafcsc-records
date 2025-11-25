@@ -29,7 +29,7 @@ return new class extends Migration
 
         // Add profile_picture column to staff table
         Schema::table('staff', function (Blueprint $table) {
-            $table->string('profile_picture')->nullable()->after('date_of_birth');
+            $table->string('profile_picture')->nullable();
         });
     }
 

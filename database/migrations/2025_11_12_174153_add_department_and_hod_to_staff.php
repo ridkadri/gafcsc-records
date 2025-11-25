@@ -14,19 +14,19 @@ return new class extends Migration
         Schema::table('staff', function (Blueprint $table) {
             // Only add department if it doesn't exist
             if (!Schema::hasColumn('staff', 'department')) {
-                $table->string('department')->nullable()->after('deployment');
+                $table->string('department')->nullable();
                 $table->index('department'); // Add index for faster queries
             }
             
             // Ensure HOD columns exist
             if (!Schema::hasColumn('staff', 'is_hod')) {
-                $table->boolean('is_hod')->default(false)->after('department');
+                $table->boolean('is_hod')->default(false);
             }
             
             if (!Schema::hasColumn('staff', 'head_of_department_id')) {
                 $table->foreignId('head_of_department_id')
                       ->nullable()
-                      ->after('is_hod')
+                      
                       ->constrained('staff')
                       ->onDelete('set null');
             }

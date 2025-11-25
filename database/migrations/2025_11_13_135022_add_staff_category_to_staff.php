@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('staff', function (Blueprint $table) {
-            $table->string('staff_category')->nullable()->after('present_grade'); // Senior or Junior for civilians
+            $table->string('staff_category')->nullable(); // Senior or Junior for civilians
         });
     }
 
