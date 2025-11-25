@@ -1,0 +1,44 @@
+name: Deploy to Ubuntu Server
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/gafcsc-records
+            
+            # Pull latest changes
+            git pull origin main
+            
+            # Install/update dependencies
+            composer install --no-dev --optimize-autoloader --no-interaction
+            
+            # Run migrations
+            php artisan migrate --force
+            
+            # Build frontend assets
+            npm install
+            npm run build
+            
+            # Clear and cache configurations
+            php artisan config:clear
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            
+            # Set permissions
+            chmod -R 775 storage bootstrap/cache
+            
+            # Restart PHP-FPM
+            sudo systemctl restart php8.3-fpm
