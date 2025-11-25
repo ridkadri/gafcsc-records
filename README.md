@@ -1,4 +1,4 @@
-# Military University Staff Management System
+# GAFCSC Staff Management System
 
 A comprehensive Laravel-based staff management system designed specifically for military universities, featuring role-based access control and advanced staff tracking capabilities.
 
