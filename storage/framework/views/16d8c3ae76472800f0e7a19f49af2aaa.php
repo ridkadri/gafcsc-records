@@ -1,3 +1,4 @@
+
 <?php if (isset($component)) { $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54 = $attributes; } ?>
 <?php $component = App\View\Components\AppLayout::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -361,17 +362,21 @@ endif;
 unset($__errorArgs, $__bag); ?>
                                 </div>
 
-                                <!-- Deployment -->
+                                <!-- Status -->
                                 <div>
                                     <label for="deployment" class="block text-sm font-medium text-gray-700 mb-2">
-                                        Deployment
+                                        Status
                                     </label>
-                                    <input type="text" 
-                                           name="deployment" 
-                                           id="deployment" 
-                                           value="<?php echo e(old('deployment', $staff->deployment ?? '')); ?>"
-                                           placeholder="e.g., Finance Unit, HR Department"
-                                           class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <select name="deployment" 
+                                            id="deployment" 
+                                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                        <option value="">Select Status</option>
+                                        <option value="On Ground" <?php echo e(old('deployment', $staff->deployment ?? '') === 'On Ground' ? 'selected' : ''); ?>>On Ground</option>
+                                        <option value="Leave" <?php echo e(old('deployment', $staff->deployment ?? '') === 'Leave' ? 'selected' : ''); ?>>Leave</option>
+                                        <option value="T Leave" <?php echo e(old('deployment', $staff->deployment ?? '') === 'T Leave' ? 'selected' : ''); ?>>T Leave</option>
+                                        <option value="Indisposed" <?php echo e(old('deployment', $staff->deployment ?? '') === 'Indisposed' ? 'selected' : ''); ?>>Indisposed</option>
+                                        <option value="Mission" <?php echo e(old('deployment', $staff->deployment ?? '') === 'Mission' ? 'selected' : ''); ?>>Mission</option>
+                                    </select>
                                     <?php $__errorArgs = ['deployment'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -534,6 +539,35 @@ endif;
 unset($__errorArgs, $__bag); ?>
                                 </div>
 
+                                <!-- Location -->
+                                <div>
+                                    <label for="location_civ" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Location
+                                    </label>
+                                    <select name="location" 
+                                            id="location_civ" 
+                                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                        <option value="">Select Location</option>
+                                        <option value="HQ" <?php echo e(old('location', $staff->location ?? '') === 'HQ' ? 'selected' : ''); ?>>HQ</option>
+                                        <option value="Admin Building" <?php echo e(old('location', $staff->location ?? '') === 'Admin Building' ? 'selected' : ''); ?>>Admin Building</option>
+                                        <option value="Junior Division" <?php echo e(old('location', $staff->location ?? '') === 'Junior Division' ? 'selected' : ''); ?>>Junior Division</option>
+                                        <option value="QM" <?php echo e(old('location', $staff->location ?? '') === 'QM' ? 'selected' : ''); ?>>QM</option>
+                                        <option value="Research" <?php echo e(old('location', $staff->location ?? '') === 'Research' ? 'selected' : ''); ?>>Research</option>
+                                        <option value="Library" <?php echo e(old('location', $staff->location ?? '') === 'Library' ? 'selected' : ''); ?>>Library</option>
+                                        <option value="Hamidu Hall" <?php echo e(old('location', $staff->location ?? '') === 'Hamidu Hall' ? 'selected' : ''); ?>>Hamidu Hall</option>
+                                    </select>
+                                    <?php $__errorArgs = ['location'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <p class="mt-1 text-sm text-red-600"><?php echo e($message); ?></p>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+
                                 <!-- Date of First Appointment -->
                                 <div>
                                     <label for="date_of_first_appointment" class="block text-sm font-medium text-gray-700 mb-2">
@@ -600,38 +634,47 @@ unset($__errorArgs, $__bag); ?>
         </div>
 
         <script>
-        // For edit form - automatically show the correct fields based on staff type
         document.addEventListener('DOMContentLoaded', function() {
-            const staffType = '<?php echo e($staff->type); ?>';
-            const militaryFields = document.getElementById('militaryFields');
-            const civilianFields = document.getElementById('civilianFields');
+        const staffType = '<?php echo e($staff->type); ?>';
+        const militaryFields = document.getElementById('militaryFields');
+        const civilianFields = document.getElementById('civilianFields');
+        
+        if (staffType === 'military') {
+            militaryFields.style.display = 'block';
+            civilianFields.style.display = 'none';
             
-            if (staffType === 'military') {
-                militaryFields.style.display = 'block';
-                civilianFields.style.display = 'none';
-                
-                // Set required fields for military
-                const rankField = document.getElementById('rank');
-                const sexField = document.getElementById('sex');
-                const gradeField = document.getElementById('present_grade');
-                
-                if (rankField) rankField.setAttribute('required', 'required');
-                if (sexField) sexField.setAttribute('required', 'required');
-                if (gradeField) gradeField.removeAttribute('required');
-            } else if (staffType === 'civilian') {
-                militaryFields.style.display = 'none';
-                civilianFields.style.display = 'block';
-                
-                // Set required fields for civilian
-                const gradeField = document.getElementById('present_grade');
-                const rankField = document.getElementById('rank');
-                const sexField = document.getElementById('sex');
-                
-                if (gradeField) gradeField.setAttribute('required', 'required');
-                if (rankField) rankField.removeAttribute('required');
-                if (sexField) sexField.removeAttribute('required');
-            }
-        });
+            // Disable civilian fields so they don't submit
+            civilianFields.querySelectorAll('input, select, textarea').forEach(field => {
+                field.disabled = true;
+            });
+            
+            // Set required fields for military
+            const rankField = document.getElementById('rank');
+            const sexField = document.getElementById('sex');
+            const gradeField = document.getElementById('present_grade');
+            
+            if (rankField) rankField.setAttribute('required', 'required');
+            if (sexField) sexField.setAttribute('required', 'required');
+            if (gradeField) gradeField.removeAttribute('required');
+        } else if (staffType === 'civilian') {
+            militaryFields.style.display = 'none';
+            civilianFields.style.display = 'block';
+            
+            // Disable military fields so they don't submit
+            militaryFields.querySelectorAll('input, select, textarea').forEach(field => {
+                field.disabled = true;
+            });
+            
+            // Set required fields for civilian
+            const gradeField = document.getElementById('present_grade');
+            const rankField = document.getElementById('rank');
+            const sexField = document.getElementById('sex');
+            
+            if (gradeField) gradeField.setAttribute('required', 'required');
+            if (rankField) rankField.removeAttribute('required');
+            if (sexField) sexField.removeAttribute('required');
+        }
+    });
     </script>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
@@ -642,4 +685,4 @@ unset($__errorArgs, $__bag); ?>
 <?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
 <?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
 <?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
-<?php endif; ?><?php /**PATH /var/www/gafcsc-records/resources/views/staff/edit.blade.php ENDPATH**/ ?>
+<?php endif; ?><?php /**PATH C:\laragon\www\gafcsc-records\resources\views/staff/edit.blade.php ENDPATH**/ ?>

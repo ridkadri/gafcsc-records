@@ -266,17 +266,21 @@
                                     @enderror
                                 </div>
 
-                                <!-- Deployment -->
+                               <!-- Status -->
                                 <div>
                                     <label for="deployment" class="block text-sm font-medium text-gray-700 mb-2">
-                                        Deployment
+                                        Status
                                     </label>
-                                    <input type="text" 
-                                           name="deployment" 
-                                           id="deployment" 
-                                           value="{{ old('deployment') }}"
-                                           placeholder="e.g., Finance Unit, HR Department"
-                                           class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <select name="deployment" 
+                                            id="deployment" 
+                                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                        <option value="">Select Status</option>
+                                        <option value="On Ground" {{ old('deployment', $staff->deployment ?? '') === 'On Ground' ? 'selected' : '' }}>On Ground</option>
+                                        <option value="Leave" {{ old('deployment', $staff->deployment ?? '') === 'Leave' ? 'selected' : '' }}>Leave</option>
+                                        <option value="T Leave" {{ old('deployment', $staff->deployment ?? '') === 'T Leave' ? 'selected' : '' }}>T Leave</option>
+                                        <option value="Indisposed" {{ old('deployment', $staff->deployment ?? '') === 'Indisposed' ? 'selected' : '' }}>Indisposed</option>
+                                        <option value="Mission" {{ old('deployment', $staff->deployment ?? '') === 'Mission' ? 'selected' : '' }}>Mission</option>
+                                    </select>
                                     @error('deployment')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
@@ -399,16 +403,13 @@
                                             id="location" 
                                             class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                         <option value="">Select Location</option>
-                                        <option value="Accra" {{ old('location') === 'Accra' ? 'selected' : '' }}>Accra</option>
-                                        <option value="Kumasi" {{ old('location') === 'Kumasi' ? 'selected' : '' }}>Kumasi</option>
-                                        <option value="Tamale" {{ old('location') === 'Tamale' ? 'selected' : '' }}>Tamale</option>
-                                        <option value="Takoradi" {{ old('location') === 'Takoradi' ? 'selected' : '' }}>Takoradi</option>
-                                        <option value="Cape Coast" {{ old('location') === 'Cape Coast' ? 'selected' : '' }}>Cape Coast</option>
-                                        <option value="Ho" {{ old('location') === 'Ho' ? 'selected' : '' }}>Ho</option>
-                                        <option value="Sunyani" {{ old('location') === 'Sunyani' ? 'selected' : '' }}>Sunyani</option>
-                                        <option value="Wa" {{ old('location') === 'Wa' ? 'selected' : '' }}>Wa</option>
-                                        <option value="Bolgatanga" {{ old('location') === 'Bolgatanga' ? 'selected' : '' }}>Bolgatanga</option>
-                                        <option value="Koforidua" {{ old('location') === 'Koforidua' ? 'selected' : '' }}>Koforidua</option>
+                                        <option value="HQ" {{ old('location') === 'HQ' ? 'selected' : '' }}>HQ</option>
+                                        <option value="Admin Building" {{ old('location') === 'Admin Building' ? 'selected' : '' }}>Admin Building</option>
+                                        <option value="Junior Division" {{ old('location') === 'Junior Division' ? 'selected' : '' }}>Junior Division</option>
+                                        <option value="QM" {{ old('location') === 'QM' ? 'selected' : '' }}>QM</option>
+                                        <option value="Research" {{ old('location') === 'Research' ? 'selected' : '' }}>Research</option>
+                                        <option value="Library" {{ old('location') === 'Research' ? 'selected' : '' }}>Library</option>
+                                        <option value="Hamidu Hall" {{ old('location') === 'Hamidu Hall' ? 'selected' : '' }}>Hamidu Hall</option>
                                     </select>
                                     @error('location')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

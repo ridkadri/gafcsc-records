@@ -123,20 +123,16 @@
                                         </div>
 
                                         <div class="flex justify-between py-2 border-b border-gray-200">
-                                            <span class="text-sm font-medium text-gray-500">Trade</span>
-                                            <span class="text-sm text-gray-900"><?php echo e($staff->trade ?: 'Not specified'); ?></span>
-                                        </div>
-
-                                        <div class="flex justify-between py-2 border-b border-gray-200">
-                                            <span class="text-sm font-medium text-gray-500">Arm of Service</span>
-                                            <span class="text-sm text-gray-900"><?php echo e($staff->arm_of_service ?: 'Not specified'); ?></span>
-                                        </div>
-
-                                        <div class="flex justify-between py-2 border-b border-gray-200">
                                             <span class="text-sm font-medium text-gray-500">Status</span>
                                             <span class="text-sm text-gray-900">
                                                 <?php if($staff->deployment): ?>
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                                        <?php if($staff->deployment === 'On Ground'): ?> bg-green-100 text-green-800
+                                                        <?php elseif($staff->deployment === 'Leave'): ?> bg-yellow-100 text-yellow-800
+                                                        <?php elseif($staff->deployment === 'T Leave'): ?> bg-orange-100 text-orange-800
+                                                        <?php elseif($staff->deployment === 'Indisposed'): ?> bg-red-100 text-red-800
+                                                        <?php else: ?> bg-gray-100 text-gray-800
+                                                        <?php endif; ?>">
                                                         <?php echo e($staff->deployment); ?>
 
                                                     </span>
@@ -144,6 +140,16 @@
                                                     <span class="text-gray-400 italic">Not specified</span>
                                                 <?php endif; ?>
                                             </span>
+                                        </div>
+
+                                        <div class="flex justify-between py-2 border-b border-gray-200">
+                                            <span class="text-sm font-medium text-gray-500">Trade</span>
+                                            <span class="text-sm text-gray-900"><?php echo e($staff->trade ?: 'Not specified'); ?></span>
+                                        </div>
+
+                                        <div class="flex justify-between py-2 border-b border-gray-200">
+                                            <span class="text-sm font-medium text-gray-500">Arm of Service</span>
+                                            <span class="text-sm text-gray-900"><?php echo e($staff->arm_of_service ?: 'Not specified'); ?></span>
                                         </div>
                                     </div>
 
@@ -224,11 +230,12 @@
                                         </div>
 
                                         <div class="flex justify-between py-2 border-b border-gray-200">
-                                            <span class="text-sm font-medium text-gray-500">Staff Category</span>
+                                            <span class="text-sm font-medium text-gray-500">Appointment</span>
                                             <span class="text-sm text-gray-900">
-                                                <?php if($staff->staff_category): ?>
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <?php echo e($staff->staff_category === 'Senior' ? 'bg-purple-100 text-purple-800' : 'bg-indigo-100 text-indigo-800'); ?>">
-                                                        <?php echo e($staff->staff_category); ?> Staff
+                                                <?php if($staff->appointment): ?>
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                        <?php echo e(\App\Models\Staff::getJobDescriptions()[$staff->appointment] ?? $staff->appointment); ?>
+
                                                     </span>
                                                 <?php else: ?>
                                                     <span class="text-gray-400 italic">Not specified</span>
@@ -237,12 +244,36 @@
                                         </div>
 
                                         <div class="flex justify-between py-2 border-b border-gray-200">
-                                            <span class="text-sm font-medium text-gray-500">Appointment</span>
-                                            <span class="text-sm text-gray-900">
-                                                <?php if($staff->appointment): ?>
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                        <?php echo e($staff->appointment); ?>
+                                            <span class="text-sm font-medium text-gray-500">Location</span>
+                                            <span class="text-sm text-gray-900"><?php echo e($staff->location ?: 'Not specified'); ?></span>
+                                        </div>
 
+                                        <div class="flex justify-between py-2 border-b border-gray-200">
+                                            <span class="text-sm font-medium text-gray-500">Status</span>
+                                            <span class="text-sm text-gray-900">
+                                                <?php if($staff->deployment): ?>
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                                        <?php if($staff->deployment === 'On Ground'): ?> bg-green-100 text-green-800
+                                                        <?php elseif($staff->deployment === 'Leave'): ?> bg-yellow-100 text-yellow-800
+                                                        <?php elseif($staff->deployment === 'T Leave'): ?> bg-orange-100 text-orange-800
+                                                        <?php elseif($staff->deployment === 'Indisposed'): ?> bg-red-100 text-red-800
+                                                        <?php else: ?> bg-gray-100 text-gray-800
+                                                        <?php endif; ?>">
+                                                        <?php echo e($staff->deployment); ?>
+
+                                                    </span>
+                                                <?php else: ?>
+                                                    <span class="text-gray-400 italic">Not specified</span>
+                                                <?php endif; ?>
+                                            </span>
+                                        </div>
+
+                                        <div class="flex justify-between py-2 border-b border-gray-200">
+                                            <span class="text-sm font-medium text-gray-500">Staff Category</span>
+                                            <span class="text-sm text-gray-900">
+                                                <?php if($staff->staff_category): ?>
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <?php echo e($staff->staff_category === 'Senior' ? 'bg-purple-100 text-purple-800' : 'bg-indigo-100 text-indigo-800'); ?>">
+                                                        <?php echo e($staff->staff_category); ?> Staff
                                                     </span>
                                                 <?php else: ?>
                                                     <span class="text-gray-400 italic">Not specified</span>
@@ -298,34 +329,6 @@
                                             <span class="text-sm text-gray-900">
                                                 <?php echo e($staff->date_of_posting ? $staff->date_of_posting->format('F j, Y') : 'Not specified'); ?>
 
-                                            </span>
-                                        </div>
-
-                                        <div class="flex justify-between py-2 border-b border-gray-200">
-                                            <span class="text-sm font-medium text-gray-500">Location</span>
-                                            <span class="text-sm text-gray-900">
-                                                <?php if($staff->location): ?>
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                                        📍 <?php echo e($staff->location); ?>
-
-                                                    </span>
-                                                <?php else: ?>
-                                                    <span class="text-gray-400 italic">Not specified</span>
-                                                <?php endif; ?>
-                                            </span>
-                                        </div>
-
-                                        <div class="flex justify-between py-2 border-b border-gray-200">
-                                            <span class="text-sm font-medium text-gray-500">Status</span>
-                                            <span class="text-sm text-gray-900">
-                                                <?php if($staff->deployment): ?>
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                                        <?php echo e($staff->deployment); ?>
-
-                                                    </span>
-                                                <?php else: ?>
-                                                    <span class="text-gray-400 italic">Not specified</span>
-                                                <?php endif; ?>
                                             </span>
                                         </div>
 
@@ -610,4 +613,4 @@
 <?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
 <?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
 <?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
-<?php endif; ?><?php /**PATH /var/www/gafcsc-records/resources/views/staff/show.blade.php ENDPATH**/ ?>
+<?php endif; ?><?php /**PATH C:\laragon\www\gafcsc-records\resources\views/staff/show.blade.php ENDPATH**/ ?>

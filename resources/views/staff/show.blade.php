@@ -111,6 +111,25 @@
                                         </div>
 
                                         <div class="flex justify-between py-2 border-b border-gray-200">
+                                            <span class="text-sm font-medium text-gray-500">Status</span>
+                                            <span class="text-sm text-gray-900">
+                                                @if($staff->deployment)
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                                        @if($staff->deployment === 'On Ground') bg-green-100 text-green-800
+                                                        @elseif($staff->deployment === 'Leave') bg-yellow-100 text-yellow-800
+                                                        @elseif($staff->deployment === 'T Leave') bg-orange-100 text-orange-800
+                                                        @elseif($staff->deployment === 'Indisposed') bg-red-100 text-red-800
+                                                        @else bg-gray-100 text-gray-800
+                                                        @endif">
+                                                        {{ $staff->deployment }}
+                                                    </span>
+                                                @else
+                                                    <span class="text-gray-400 italic">Not specified</span>
+                                                @endif
+                                            </span>
+                                        </div>
+
+                                        <div class="flex justify-between py-2 border-b border-gray-200">
                                             <span class="text-sm font-medium text-gray-500">Trade</span>
                                             <span class="text-sm text-gray-900">{{ $staff->trade ?: 'Not specified' }}</span>
                                         </div>
@@ -118,19 +137,6 @@
                                         <div class="flex justify-between py-2 border-b border-gray-200">
                                             <span class="text-sm font-medium text-gray-500">Arm of Service</span>
                                             <span class="text-sm text-gray-900">{{ $staff->arm_of_service ?: 'Not specified' }}</span>
-                                        </div>
-
-                                        <div class="flex justify-between py-2 border-b border-gray-200">
-                                            <span class="text-sm font-medium text-gray-500">Status</span>
-                                            <span class="text-sm text-gray-900">
-                                                @if($staff->deployment)
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                                        {{ $staff->deployment }}
-                                                    </span>
-                                                @else
-                                                    <span class="text-gray-400 italic">Not specified</span>
-                                                @endif
-                                            </span>
                                         </div>
                                     </div>
 
@@ -206,11 +212,11 @@
                                         </div>
 
                                         <div class="flex justify-between py-2 border-b border-gray-200">
-                                            <span class="text-sm font-medium text-gray-500">Staff Category</span>
+                                            <span class="text-sm font-medium text-gray-500">Appointment</span>
                                             <span class="text-sm text-gray-900">
-                                                @if($staff->staff_category)
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $staff->staff_category === 'Senior' ? 'bg-purple-100 text-purple-800' : 'bg-indigo-100 text-indigo-800' }}">
-                                                        {{ $staff->staff_category }} Staff
+                                                @if($staff->appointment)
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                        {{ \App\Models\Staff::getJobDescriptions()[$staff->appointment] ?? $staff->appointment }}
                                                     </span>
                                                 @else
                                                     <span class="text-gray-400 italic">Not specified</span>
@@ -219,11 +225,35 @@
                                         </div>
 
                                         <div class="flex justify-between py-2 border-b border-gray-200">
-                                            <span class="text-sm font-medium text-gray-500">Appointment</span>
+                                            <span class="text-sm font-medium text-gray-500">Location</span>
+                                            <span class="text-sm text-gray-900">{{ $staff->location ?: 'Not specified' }}</span>
+                                        </div>
+
+                                        <div class="flex justify-between py-2 border-b border-gray-200">
+                                            <span class="text-sm font-medium text-gray-500">Status</span>
                                             <span class="text-sm text-gray-900">
-                                                @if($staff->appointment)
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                        {{ $staff->appointment }}
+                                                @if($staff->deployment)
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                                        @if($staff->deployment === 'On Ground') bg-green-100 text-green-800
+                                                        @elseif($staff->deployment === 'Leave') bg-yellow-100 text-yellow-800
+                                                        @elseif($staff->deployment === 'T Leave') bg-orange-100 text-orange-800
+                                                        @elseif($staff->deployment === 'Indisposed') bg-red-100 text-red-800
+                                                        @else bg-gray-100 text-gray-800
+                                                        @endif">
+                                                        {{ $staff->deployment }}
+                                                    </span>
+                                                @else
+                                                    <span class="text-gray-400 italic">Not specified</span>
+                                                @endif
+                                            </span>
+                                        </div>
+
+                                        <div class="flex justify-between py-2 border-b border-gray-200">
+                                            <span class="text-sm font-medium text-gray-500">Staff Category</span>
+                                            <span class="text-sm text-gray-900">
+                                                @if($staff->staff_category)
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $staff->staff_category === 'Senior' ? 'bg-purple-100 text-purple-800' : 'bg-indigo-100 text-indigo-800' }}">
+                                                        {{ $staff->staff_category }} Staff
                                                     </span>
                                                 @else
                                                     <span class="text-gray-400 italic">Not specified</span>
@@ -274,32 +304,6 @@
                                             <span class="text-sm font-medium text-gray-500">Date of Posting</span>
                                             <span class="text-sm text-gray-900">
                                                 {{ $staff->date_of_posting ? $staff->date_of_posting->format('F j, Y') : 'Not specified' }}
-                                            </span>
-                                        </div>
-
-                                        <div class="flex justify-between py-2 border-b border-gray-200">
-                                            <span class="text-sm font-medium text-gray-500">Location</span>
-                                            <span class="text-sm text-gray-900">
-                                                @if($staff->location)
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                                        📍 {{ $staff->location }}
-                                                    </span>
-                                                @else
-                                                    <span class="text-gray-400 italic">Not specified</span>
-                                                @endif
-                                            </span>
-                                        </div>
-
-                                        <div class="flex justify-between py-2 border-b border-gray-200">
-                                            <span class="text-sm font-medium text-gray-500">Status</span>
-                                            <span class="text-sm text-gray-900">
-                                                @if($staff->deployment)
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                                        {{ $staff->deployment }}
-                                                    </span>
-                                                @else
-                                                    <span class="text-gray-400 italic">Not specified</span>
-                                                @endif
                                             </span>
                                         </div>
 

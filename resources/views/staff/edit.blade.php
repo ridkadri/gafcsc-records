@@ -1,3 +1,4 @@
+{{-- TEST: File updated at 1:00 PM --}}
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -263,17 +264,21 @@
                                     @enderror
                                 </div>
 
-                                <!-- Deployment -->
+                                <!-- Status -->
                                 <div>
                                     <label for="deployment" class="block text-sm font-medium text-gray-700 mb-2">
-                                        Deployment
+                                        Status
                                     </label>
-                                    <input type="text" 
-                                           name="deployment" 
-                                           id="deployment" 
-                                           value="{{ old('deployment', $staff->deployment ?? '') }}"
-                                           placeholder="e.g., Finance Unit, HR Department"
-                                           class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <select name="deployment" 
+                                            id="deployment" 
+                                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                        <option value="">Select Status</option>
+                                        <option value="On Ground" {{ old('deployment', $staff->deployment ?? '') === 'On Ground' ? 'selected' : '' }}>On Ground</option>
+                                        <option value="Leave" {{ old('deployment', $staff->deployment ?? '') === 'Leave' ? 'selected' : '' }}>Leave</option>
+                                        <option value="T Leave" {{ old('deployment', $staff->deployment ?? '') === 'T Leave' ? 'selected' : '' }}>T Leave</option>
+                                        <option value="Indisposed" {{ old('deployment', $staff->deployment ?? '') === 'Indisposed' ? 'selected' : '' }}>Indisposed</option>
+                                        <option value="Mission" {{ old('deployment', $staff->deployment ?? '') === 'Mission' ? 'selected' : '' }}>Mission</option>
+                                    </select>
                                     @error('deployment')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
@@ -387,6 +392,28 @@
                                     @enderror
                                 </div>
 
+                                <!-- Location -->
+                                <div>
+                                    <label for="location_civ" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Location
+                                    </label>
+                                    <select name="location" 
+                                            id="location_civ" 
+                                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                        <option value="">Select Location</option>
+                                        <option value="HQ" {{ old('location', $staff->location ?? '') === 'HQ' ? 'selected' : '' }}>HQ</option>
+                                        <option value="Admin Building" {{ old('location', $staff->location ?? '') === 'Admin Building' ? 'selected' : '' }}>Admin Building</option>
+                                        <option value="Junior Division" {{ old('location', $staff->location ?? '') === 'Junior Division' ? 'selected' : '' }}>Junior Division</option>
+                                        <option value="QM" {{ old('location', $staff->location ?? '') === 'QM' ? 'selected' : '' }}>QM</option>
+                                        <option value="Research" {{ old('location', $staff->location ?? '') === 'Research' ? 'selected' : '' }}>Research</option>
+                                        <option value="Library" {{ old('location', $staff->location ?? '') === 'Library' ? 'selected' : '' }}>Library</option>
+                                        <option value="Hamidu Hall" {{ old('location', $staff->location ?? '') === 'Hamidu Hall' ? 'selected' : '' }}>Hamidu Hall</option>
+                                    </select>
+                                    @error('location')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
                                 <!-- Date of First Appointment -->
                                 <div>
                                     <label for="date_of_first_appointment" class="block text-sm font-medium text-gray-700 mb-2">
@@ -439,37 +466,46 @@
         </div>
 
         <script>
-        // For edit form - automatically show the correct fields based on staff type
         document.addEventListener('DOMContentLoaded', function() {
-            const staffType = '{{ $staff->type }}';
-            const militaryFields = document.getElementById('militaryFields');
-            const civilianFields = document.getElementById('civilianFields');
+        const staffType = '{{ $staff->type }}';
+        const militaryFields = document.getElementById('militaryFields');
+        const civilianFields = document.getElementById('civilianFields');
+        
+        if (staffType === 'military') {
+            militaryFields.style.display = 'block';
+            civilianFields.style.display = 'none';
             
-            if (staffType === 'military') {
-                militaryFields.style.display = 'block';
-                civilianFields.style.display = 'none';
-                
-                // Set required fields for military
-                const rankField = document.getElementById('rank');
-                const sexField = document.getElementById('sex');
-                const gradeField = document.getElementById('present_grade');
-                
-                if (rankField) rankField.setAttribute('required', 'required');
-                if (sexField) sexField.setAttribute('required', 'required');
-                if (gradeField) gradeField.removeAttribute('required');
-            } else if (staffType === 'civilian') {
-                militaryFields.style.display = 'none';
-                civilianFields.style.display = 'block';
-                
-                // Set required fields for civilian
-                const gradeField = document.getElementById('present_grade');
-                const rankField = document.getElementById('rank');
-                const sexField = document.getElementById('sex');
-                
-                if (gradeField) gradeField.setAttribute('required', 'required');
-                if (rankField) rankField.removeAttribute('required');
-                if (sexField) sexField.removeAttribute('required');
-            }
-        });
+            // Disable civilian fields so they don't submit
+            civilianFields.querySelectorAll('input, select, textarea').forEach(field => {
+                field.disabled = true;
+            });
+            
+            // Set required fields for military
+            const rankField = document.getElementById('rank');
+            const sexField = document.getElementById('sex');
+            const gradeField = document.getElementById('present_grade');
+            
+            if (rankField) rankField.setAttribute('required', 'required');
+            if (sexField) sexField.setAttribute('required', 'required');
+            if (gradeField) gradeField.removeAttribute('required');
+        } else if (staffType === 'civilian') {
+            militaryFields.style.display = 'none';
+            civilianFields.style.display = 'block';
+            
+            // Disable military fields so they don't submit
+            militaryFields.querySelectorAll('input, select, textarea').forEach(field => {
+                field.disabled = true;
+            });
+            
+            // Set required fields for civilian
+            const gradeField = document.getElementById('present_grade');
+            const rankField = document.getElementById('rank');
+            const sexField = document.getElementById('sex');
+            
+            if (gradeField) gradeField.setAttribute('required', 'required');
+            if (rankField) rankField.removeAttribute('required');
+            if (sexField) sexField.removeAttribute('required');
+        }
+    });
     </script>
 </x-app-layout>
