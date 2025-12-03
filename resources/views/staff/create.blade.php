@@ -95,6 +95,22 @@
                                 @enderror
                             </div>
 
+                            <!-- Contact Number -->
+                            <div>
+                                <label for="contact" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Contact Number
+                                </label>
+                                <input type="text" 
+                                    id="contact" 
+                                    name="contact" 
+                                    value="{{ old('contact') }}"
+                                    placeholder="e.g., 0241234567"
+                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('contact') border-red-500 @enderror">
+                                @error('contact')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             <!-- Department - REQUIRED FIELD -->
                             <div class="md:col-span-2 bg-blue-50 p-4 rounded-lg border border-blue-200">
                                 <label for="department" class="block text-sm font-medium text-gray-700 mb-2">

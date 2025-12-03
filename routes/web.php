@@ -44,6 +44,8 @@ Route::middleware(['auth', 'verified', 'force.password.change'])->group(function
      Route::patch('/profile/update-dob', [ProfileController::class, 'updateDateOfBirth'])->name('profile.update-dob');
 });
 
+Route::post('/staff/import', [StaffController::class, 'import'])->name('staff.import');
+
 // Quick super admin setup route (for initial setup only - when no super admin exists)
 Route::post('/make-super-admin', [UserManagementController::class, 'makeSuperAdmin'])
     ->middleware(['auth', 'force.password.change'])

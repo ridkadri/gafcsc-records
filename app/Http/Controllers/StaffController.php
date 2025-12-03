@@ -120,6 +120,28 @@ class StaffController extends Controller
     }
 
     /**
+     * Import staff from Excel file
+    */
+    
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:10240',
+        ]);
+
+        try {
+            $import = new \App\Imports\StaffImport();
+            Excel::import($import, $request->file('file'));
+
+            return redirect()->route('staff.index')
+                ->with('success', "Import successful! {$import->getImported()} staff imported, {$import->getUpdated()} updated.");
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Import failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Show the form for creating a new staff member.
      */
     public function create()
@@ -358,21 +380,23 @@ class StaffController extends Controller
         $staff = $query->orderBy('name')->get();
         
         // Create CSV headers
-        $csvData = "Service Number,Name,Type,";
-        
+        $csvData = "Staff ID,Service Number,Name,Contact,Type,";
+
         // Add military-specific headers
         $csvData .= "Rank,Sex,Trade,Arm of Service,Deployment,Date of Enrollment,";
-        
+
         // Add civilian-specific headers
-        $csvData .= "Present Grade,Date of Employment,Date of Posting,Location,";
-        
+        $csvData .= "Present Grade,Staff Category,Date of Employment,Date of Posting,Location,";
+
         // Add common headers
-        $csvData .= "Date of Birth,Last Promotion Date,Department\n";
-        
+        $csvData .= "Date of Birth,Last Promotion Date,Department,Appointment,Is HOD\n";
+
         // Add data rows
         foreach ($staff as $member) {
+            $csvData .= "\"{$member->staff_id}\",";
             $csvData .= "\"{$member->service_number}\",";
             $csvData .= "\"{$member->name}\",";
+            $csvData .= "\"{$member->contact}\",";
             $csvData .= "\"{$member->type}\",";
             
             // Military fields
@@ -385,6 +409,7 @@ class StaffController extends Controller
             
             // Civilian fields
             $csvData .= "\"{$member->present_grade}\",";
+            $csvData .= "\"{$member->staff_category}\",";
             $csvData .= "\"" . ($member->date_of_employment ? $member->date_of_employment->format('Y-m-d') : '') . "\",";
             $csvData .= "\"" . ($member->date_of_posting ? $member->date_of_posting->format('Y-m-d') : '') . "\",";
             $csvData .= "\"{$member->location}\",";
@@ -392,8 +417,10 @@ class StaffController extends Controller
             // Common fields
             $csvData .= "\"" . ($member->date_of_birth ? $member->date_of_birth->format('Y-m-d') : '') . "\",";
             $csvData .= "\"" . ($member->last_promotion_date ? $member->last_promotion_date->format('Y-m-d') : '') . "\",";
-            $csvData .= "\"{$member->department}\"\n";
-        }
+            $csvData .= "\"{$member->department}\",";
+            $csvData .= "\"{$member->appointment}\",";
+            $csvData .= "\"" . ($member->is_hod ? 'Yes' : 'No') . "\"\n";
+        }   
         
         $filename = 'gafcsc_staff_export_' . now()->format('Y_m_d_H_i_s') . '.csv';
         

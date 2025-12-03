@@ -6,7 +6,7 @@
     <style>
         body {
             font-family: serif;
-            font-size: 10pt;
+            font-size: 9pt;
             margin: 0;
             padding: 20px;
         }
@@ -74,16 +74,16 @@
             background-color: #374151;
             color: white;
             font-weight: bold;
-            padding: 12px 8px;
+            padding: 8px 5px;
             text-align: left;
-            font-size: 11px;
+            font-size: 9px;
             text-transform: uppercase;
         }
         
         td {
-            padding: 10px 8px;
+            padding: 8px 5px;
             border-bottom: 1px solid #e5e7eb;
-            font-size: 11px;
+            font-size: 9px;
         }
         
         tr:nth-child(even) {
@@ -93,18 +93,27 @@
         .rank-badge {
             background-color: #dbeafe;
             color: #1e40af;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 8px;
             font-weight: 500;
         }
         
         .grade-badge {
             background-color: #ddd6fe;
             color: #5b21b6;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 8px;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            background-color: #d1fae5;
+            color: #065f46;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 8px;
             font-weight: 500;
         }
         
@@ -175,15 +184,17 @@
         <table>
             <thead>
                 <tr>
-                    <th style="width: 5%">No.</th>
-                    <th style="width: 12%">Service No.</th>
-                    <th style="width: 12%">Rank</th>
-                    <th style="width: 20%">Name</th>
-                    <th style="width: 6%">Sex</th>
-                    <th style="width: 10%">Trade</th>
-                    <th style="width: 10%">Arm of Svc</th>
-                    <th style="width: 10%">Deployment</th>
-                    <th style="width: 15%">Department</th>
+                    <th style="width: 3%">No.</th>
+                    <th style="width: 10%">Service No.</th>
+                    <th style="width: 15%">Name</th>
+                    <th style="width: 9%">Contact</th>
+                    <th style="width: 9%">Rank</th>
+                    <th style="width: 12%">Appointment</th>
+                    <th style="width: 4%">Sex</th>
+                    <th style="width: 8%">Trade</th>
+                    <th style="width: 8%">Arm</th>
+                    <th style="width: 8%">Status</th>
+                    <th style="width: 14%">Department</th>
                 </tr>
             </thead>
             <tbody>
@@ -191,6 +202,8 @@
                     <tr>
                         <td>{{ $index + 1 }}</td>
                         <td><strong>{{ $member->service_number }}</strong></td>
+                        <td>{{ $member->name }}</td>
+                        <td>{{ $member->contact ?: '-' }}</td>
                         <td>
                             @if($member->rank)
                                 <span class="rank-badge">{{ $member->rank }}</span>
@@ -198,11 +211,17 @@
                                 <span style="color: #999; font-style: italic;">N/A</span>
                             @endif
                         </td>
-                        <td>{{ $member->name }}</td>
+                        <td>{{ $member->appointment ?: '-' }}</td>
                         <td style="text-align: center;">{{ $member->sex ?: '-' }}</td>
                         <td>{{ $member->trade ?: '-' }}</td>
                         <td>{{ $member->arm_of_service ?: '-' }}</td>
-                        <td>{{ $member->deployment ?: '-' }}</td>
+                        <td>
+                            @if($member->deployment)
+                                <span class="status-badge">{{ $member->deployment }}</span>
+                            @else
+                                -
+                            @endif
+                        </td>
                         <td>{{ $member->department ?: '-' }}</td>
                     </tr>
                 @endforeach
@@ -220,13 +239,15 @@
         <table>
             <thead>
                 <tr>
-                    <th style="width: 5%">No.</th>
-                    <th style="width: 15%">Service No.</th>
-                    <th style="width: 25%">Name</th>
-                    <th style="width: 15%">Present Grade</th>
-                    <th style="width: 15%">Job Description</th>
-                    <th style="width: 12%">Location</th>
-                    <th style="width: 13%">Department</th>
+                    <th style="width: 3%">No.</th>
+                    <th style="width: 12%">Service No.</th>
+                    <th style="width: 18%">Name</th>
+                    <th style="width: 10%">Contact</th>
+                    <th style="width: 12%">Grade</th>
+                    <th style="width: 13%">Appointment</th>
+                    <th style="width: 10%">Location</th>
+                    <th style="width: 10%">Category</th>
+                    <th style="width: 12%">Department</th>
                 </tr>
             </thead>
             <tbody>
@@ -235,6 +256,7 @@
                         <td>{{ $index + 1 }}</td>
                         <td><strong>{{ $member->service_number }}</strong></td>
                         <td>{{ $member->name }}</td>
+                        <td>{{ $member->contact ?: '-' }}</td>
                         <td>
                             @if($member->present_grade)
                                 <span class="grade-badge">{{ $member->present_grade }}</span>
@@ -242,8 +264,9 @@
                                 <span style="color: #999; font-style: italic;">N/A</span>
                             @endif
                         </td>
-                        <td>{{ $member->job_description ?: '-' }}</td>
+                        <td>{{ $member->appointment ?: '-' }}</td>
                         <td>{{ $member->location ?: '-' }}</td>
+                        <td>{{ $member->staff_category ?: '-' }}</td>
                         <td>{{ $member->department ?: '-' }}</td>
                     </tr>
                 @endforeach

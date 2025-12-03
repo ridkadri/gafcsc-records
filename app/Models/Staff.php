@@ -16,6 +16,7 @@ class Staff extends Model
         // Common fields
         'service_number',
         'name',
+        'contact',
         'type', // 'military' or 'civilian'
         'department',
         'profile_picture', // NEW - for Phase 3
@@ -372,73 +373,73 @@ class Staff extends Model
     public static function getMilitaryRanks()
     {
         return [
-            // ARMY RANKS - Officers
-            'General' => 'General',
-            'Lieutenant General' => 'Lieutenant General',
-            'Major General' => 'Major General',
-            'Brigadier General' => 'Brigadier General',
-            'Colonel' => 'Colonel',
-            'Lieutenant Colonel' => 'Lieutenant Colonel',
-            'Major' => 'Major',
-            'Captain' => 'Captain',
-            'Lieutenant' => 'Lieutenant',
-            '2nd Lieutenant' => '2nd Lieutenant',
+            // ARMY RANKS - Officers (Abbreviated)
+            'GEN' => 'GEN',
+            'LT GEN' => 'LT GEN',
+            'MAJ GEN' => 'MAJ GEN',
+            'BRIG GEN' => 'BRIG GEN',
+            'COL' => 'COL',
+            'LT COL' => 'LT COL',
+            'MAJ' => 'MAJ',
+            'CAPT' => 'CAPT',
+            'LT' => 'LT',
+            '2LT' => '2LT',
             
-            // ARMY RANKS - Other Ranks
-            'Warrant Officer Class I' => 'Warrant Officer Class I',
-            'Warrant Officer Class II' => 'Warrant Officer Class II',
-            'Staff Sergeant' => 'Staff Sergeant',
-            'Sergeant' => 'Sergeant',
-            'Corporal' => 'Corporal',
-            'Lance Corporal' => 'Lance Corporal',
-            'Private' => 'Private',
+            // ARMY RANKS - Other Ranks (Abbreviated)
+            'WO I' => 'WO I',
+            'WO II' => 'WO II',
+            'S/SGT' => 'S/SGT',
+            'SGT' => 'SGT',
+            'CPL' => 'CPL',
+            'L/CPL' => 'L/CPL',
+            'PTE' => 'PTE',
             
-            // NAVY RANKS - Flag Officers
-            'Admiral' => 'Admiral (Navy)',
-            'Vice Admiral' => 'Vice Admiral (Navy)',
-            'Rear Admiral' => 'Rear Admiral (Navy)',
-            'Commodore' => 'Commodore (Navy)',
+            // NAVY RANKS - Flag Officers (Abbreviated)
+            'ADM' => 'ADM',
+            'V/ADM' => 'V/ADM',
+            'R/ADM' => 'R/ADM',
+            'CDRE' => 'CDRE',
             
-            // NAVY RANKS - Senior Officers
-            'Captain (Navy)' => 'Captain (Navy)',
-            'Commander' => 'Commander (Navy)',
-            'Lieutenant Commander' => 'Lieutenant Commander (Navy)',
+            // NAVY RANKS - Senior Officers (Abbreviated)
+            'CAPT (N)' => 'CAPT (N)',
+            'CDR' => 'CDR',
+            'LT CDR' => 'LT CDR',
             
-            // NAVY RANKS - Junior Officers
-            'Lieutenant (Navy)' => 'Lieutenant (Navy)',
-            'Sub-Lieutenant' => 'Sub-Lieutenant (Navy)',
-            'Midshipman' => 'Midshipman (Navy)',
+            // NAVY RANKS - Junior Officers (Abbreviated)
+            'LT (N)' => 'LT (N)',
+            'S/LT' => 'S/LT',
+            'MIDS' => 'MIDS',
             
-            // NAVY RANKS - Ratings
-            'Chief Petty Officer' => 'Chief Petty Officer',
-            'Petty Officer' => 'Petty Officer',
-            'Leading Seaman' => 'Leading Seaman',
-            'Able Seaman' => 'Able Seaman',
-            'Ordinary Seaman' => 'Ordinary Seaman',
+            // NAVY RANKS - Ratings (Abbreviated)
+            'CPO' => 'CPO',
+            'PO' => 'PO',
+            'LS' => 'LS',
+            'AB' => 'AB',
+            'OS' => 'OS',
             
-            // AIR FORCE RANKS - Air Officers
-            'Air Chief Marshal' => 'Air Chief Marshal',
-            'Air Marshal' => 'Air Marshal',
-            'Air Vice Marshal' => 'Air Vice Marshal',
-            'Air Commodore' => 'Air Commodore',
+            // AIR FORCE RANKS - Air Officers (Abbreviated)
+            'ACM' => 'ACM',
+            'AM' => 'AM',
+            'AVM' => 'AVM',
+            'A/CDRE' => 'A/CDRE',
             
-            // AIR FORCE RANKS - Senior Officers
-            'Group Captain' => 'Group Captain',
-            'Wing Commander' => 'Wing Commander',
-            'Squadron Leader' => 'Squadron Leader',
+            // AIR FORCE RANKS - Senior Officers (Abbreviated)
+            'GP CAPT' => 'GP CAPT',
+            'W/CDR' => 'W/CDR',
+            'SQN LDR' => 'SQN LDR',
             
-            // AIR FORCE RANKS - Junior Officers
-            'Flight Lieutenant' => 'Flight Lieutenant',
-            'Flying Officer' => 'Flying Officer',
-            'Pilot Officer' => 'Pilot Officer',
+            // AIR FORCE RANKS - Junior Officers (Abbreviated)
+            'FLT LT' => 'FLT LT',
+            'FLG OFF' => 'FLG OFF',
+            'PLT OFF' => 'PLT OFF',
             
-            // AIR FORCE RANKS - Airmen
-            'Warrant Officer (Air)' => 'Warrant Officer (Air)',
-            'Flight Sergeant' => 'Flight Sergeant',
-            'Sergeant (Air)' => 'Sergeant (Air)',
-            'Corporal (Air)' => 'Corporal (Air)',
-            'Lance Corporal (Air)' => 'Lance Corporal (Air)',
-            'Aircraftman' => 'Aircraftman',
+            // AIR FORCE RANKS - Airmen (Abbreviated)
+            'WO (A)' => 'WO (A)',
+            'F/SGT' => 'F/SGT',
+            'SGT (A)' => 'SGT (A)',
+            'CPL (A)' => 'CPL (A)',
+            'L/CPL (A)' => 'L/CPL (A)',
+            'ACM1' => 'ACM1',
         ];
     }
 
@@ -643,6 +644,7 @@ class Staff extends Model
             'appointment' => 'nullable|string|max:255',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
             'type' => 'required|in:military',
+            'contact' => 'nullable|string|max:20',
         ];
     }
 
@@ -667,6 +669,7 @@ class Staff extends Model
             'department' => 'nullable|string|max:255',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
             'type' => 'required|in:civilian',
+            'contact' => 'nullable|string|max:20',
         ];
     }
 

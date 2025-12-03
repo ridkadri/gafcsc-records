@@ -78,6 +78,11 @@
                                             <span class="text-sm font-medium text-gray-500">Service Number</span>
                                             <span class="text-sm text-gray-900 font-mono">{{ $staff->service_number }}</span>
                                         </div>
+
+                                        <div class="flex justify-between py-2 border-b border-gray-200">
+                                            <span class="text-sm font-medium text-gray-500">Contact Number</span>
+                                            <span class="text-sm text-gray-900">{{ $staff->contact ?: 'Not specified' }}</span>
+                                        </div>
                                         
                                         <div class="flex justify-between py-2 border-b border-gray-200">
                                             <span class="text-sm font-medium text-gray-500">Rank</span>
@@ -209,6 +214,11 @@
                                                     <span class="text-gray-400 italic">Not specified</span>
                                                 @endif
                                             </span>
+                                        </div>
+
+                                        <div class="flex justify-between py-2 border-b border-gray-200">
+                                            <span class="text-sm font-medium text-gray-500">Contact Number</span>
+                                            <span class="text-sm text-gray-900">{{ $staff->contact ?: 'Not specified' }}</span>
                                         </div>
 
                                         <div class="flex justify-between py-2 border-b border-gray-200">

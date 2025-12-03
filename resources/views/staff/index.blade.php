@@ -4,14 +4,26 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('GAFCSC Staff Directory') }}
             </h2>
-            @if(Auth::user()->canManageStaff())
-                <a href="{{ route('staff.create') }}" 
-                   class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
-                    </svg>
-                    Add New Staff
-                </a>
+           @if(Auth::user()->canManageStaff())
+                <div class="flex space-x-2">
+                    <a href="{{ route('staff.create') }}" 
+                    class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                        </svg>
+                        Add New Staff
+                    </a>
+                    
+                    <!-- Import Button -->
+                    <button type="button" 
+                            onclick="document.getElementById('importModal').classList.remove('hidden')"
+                            class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:bg-green-700 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z"/>
+                        </svg>
+                        Import Excel
+                    </button>
+                </div>
             @endif
         </div>
     </x-slot>
@@ -395,9 +407,61 @@
                 <!-- Pagination -->
                 @if($staff->hasPages())
                     <div class="px-6 py-4 border-t border-gray-200">
-                        {{ $staff->links() }}
+                        {{ $staff->appends(request()->query())->links() }}
                     </div>
                 @endif
+            </div>
+        </div>
+    </div>
+    <!-- Import Modal -->
+    <div id="importModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-medium text-gray-900">Import Staff from Excel</h3>
+                    <button onclick="document.getElementById('importModal').classList.add('hidden')" 
+                            class="text-gray-400 hover:text-gray-500">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <form action="{{ route('staff.import') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Select Excel File (Military Staff)
+                        </label>
+                        <input type="file" 
+                            name="file" 
+                            accept=".xlsx,.xls" 
+                            required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <p class="mt-1 text-xs text-gray-500">
+                            Accepts .xlsx and .xls files (Max: 10MB)
+                        </p>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4">
+                        <p class="text-sm text-blue-800">
+                            <strong>Note:</strong> This will import military staff from DFA 158 format. 
+                            Existing staff will be updated based on service number.
+                        </p>
+                    </div>
+
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" 
+                                onclick="document.getElementById('importModal').classList.add('hidden')"
+                                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
+                            Cancel
+                        </button>
+                        <button type="submit" 
+                                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                            Import
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
